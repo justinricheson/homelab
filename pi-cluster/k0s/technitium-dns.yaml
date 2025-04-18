@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: technitium-dns
+  labels:
+    app: technitium-dns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: technitium-dns
+  template:
+    metadata:
+      labels:
+        app: technitium-dns
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: pi1
+      hostNetwork: true
+      containers:
+      - name: technitium-dns
+        image: technitium/dns-server:latest
+        ports:
+        - containerPort: 53
+        - containerPort: 5380
+        volumeMounts:
+        - name: config
+          mountPath: /opt/technitium-dns-server/data
+          readOnly: false
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: technitium-dns-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: technitium-dns-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: technitium-dns-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/technitium-dns
