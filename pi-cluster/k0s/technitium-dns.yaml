@@ -1,11 +1,21 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: technitium-dns
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: technitium-dns
+  namespace: technitium-dns
   labels:
     app: technitium-dns
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: technitium-dns
@@ -25,18 +35,27 @@ spec:
         - containerPort: 5380
         volumeMounts:
         - name: config
-          mountPath: /opt/technitium-dns-server/data
+          mountPath: /etc/dns
+          readOnly: false
+        - name: config-override
+          mountPath: /etc/dns/dns.config
+          subPath: dns.config
           readOnly: false
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: technitium-dns-pvc
+          claimName: config-pvc
+      - name: config-override
+        configMap:
+          name: config-override
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: technitium-dns-pvc
+  name: config-pvc
+  namespace: technitium-dns
 spec:
+  volumeName: config
   accessModes:
     - ReadWriteOnce
   resources:
@@ -46,7 +65,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: technitium-dns-pv
+  name: config
+  namespace: technitium-dns
 spec:
   capacity:
     storage: 1Gi
@@ -54,4 +74,12 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/technitium-dns
+    path: /mnt/technitium-dns-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-override
+  namespace: technitium-dns
+binaryData:
+  dns.config: RFMpBBUAAMPQAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJWC1SZWFsLUlQA3BpMQIBAAAAADUAAgAAAAAAAAAAAAAAAAAAAAA1AAEBAAAAACABAgAAAAAAAAAAAAAAAAAAAACAEA4AAAAALAEAACwBAAAAAAEA0AQBABg4AABwFwAAWAIAAAUAAAAYAAAAOAAAAADQBwAAECcAABAnAABg6gAAZAAAAGQAAABkAAAAAAAAAAAaAgAAGgIAAFAAAABVAwAAuwEAAFUDAAAAAAAJWC1SZWFsLUlQAAIAAAECAAAA3AUAAAIAAAAQAAAAAQGA9AMAHgAAAB4AAAAIBwAAECcAAAAAAAAKAAAAgDoJACwBAAAKAAAAAgAAAAkAAAAFAAAAHgAAAAEBAAEeAAAAAAFAaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1N0ZXZlbkJsYWNrL2hvc3RzL21hc3Rlci9ob3N0cxgAAACpQnFJlgEAAAACAwIgY2xvdWRmbGFyZS1kbnMuY29tICgxLjEuMS4xOjg1MykDAiBjbG91ZGZsYXJlLWRucy5jb20gKDEuMC4wLjE6ODUzKQEDAAAA0AcAAAIAAAAAAABtAQAA
