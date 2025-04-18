@@ -1,3 +1,11 @@
+## Notes for updating config:
+## Comment out the config-override volume mount, and redeploy
+## Make changes in the UI, and export the dns.config
+## Reapply the dns.config with kubectl create configmap tmp --from-file=./dns.config
+## Copy the binary data to the configmap below
+## Uncomment the config-override volume mount, and redeploy
+## Delete the tmp configmap
+
 apiVersion: v1
 kind: Namespace
 metadata:
