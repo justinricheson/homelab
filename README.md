@@ -42,8 +42,8 @@
       api:
         sans:
         - pi1.local
-			telemetry:
-			  enabled: false
+      telemetry:
+        enabled: false
       ```
     - `k0s stop & k0s start`
   - Generate Kubeconfig
@@ -56,8 +56,8 @@
 
 - Deployments
   - Push technitium, etc
-  	- `KUBECONFIG=~/.kube/config-pi1 kubectl apply -f my-service.yaml` OR
-  	- `install.sh`
+    - `KUBECONFIG=~/.kube/config-pi1 kubectl apply -f my-service.yaml` OR
+    - `install.sh`
 
 ## TODO
 
