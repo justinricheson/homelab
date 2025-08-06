@@ -1,10 +1,6 @@
-## Notes for updating config:
-## Comment out the config-override volume mount, and redeploy
-## Make changes in the UI, and export the dns.config
-## Reapply the dns.config with kubectl create configmap tmp --from-file=./dns.config
-## Copy the binary data to the configmap below
-## Uncomment the config-override volume mount, and redeploy
-## Delete the tmp configmap
+# Settings > General > Backup Settings
+#   Select: Dns Settings
+# Settings > General > Restore Settings
 
 ---
 apiVersion: v1
@@ -67,17 +63,10 @@ spec:
         - name: config
           mountPath: /etc/dns
           readOnly: false
-        - name: config-override
-          mountPath: /etc/dns/dns.config
-          subPath: dns.config
-          readOnly: false
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: config-pvc
-      - name: config-override
-        configMap:
-          name: config-override
 
 ---
 apiVersion: v1
@@ -107,12 +96,3 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /mnt/technitium-dns-config
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-override
-  namespace: technitium-dns
-binaryData:
-  dns.config: RFMpBBUAAMPQAAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJWC1SZWFsLUlQA3BpMQIBAAAAADUAAgAAAAAAAAAAAAAAAAAAAAA1AAEBAAAAACABAgAAAAAAAAAAAAAAAAAAAACAEA4AAAAALAEAACwBAAAAAAEA0AQBABg4AABwFwAAWAIAAAUAAAAYAAAAOAAAAADQBwAAECcAABAnAABg6gAAZAAAAGQAAABkAAAAAAAAAAAaAgAAGgIAAFAAAABVAwAAuwEAAFUDAAAAAAAJWC1SZWFsLUlQAAIAAAECAAAA3AUAAAIAAAAQAAAAAQGA9AMAHgAAAB4AAAAIBwAAECcAAAAAAAAKAAAAgDoJACwBAAAKAAAAAgAAAAkAAAAFAAAAHgAAAAEBAAEeAAAAAAFAaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1N0ZXZlbkJsYWNrL2hvc3RzL21hc3Rlci9ob3N0cxgAAACpQnFJlgEAAAAAAQMAAADQBwAAAgAAAAAAAG0BAAA=
