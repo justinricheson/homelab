@@ -6,10 +6,35 @@
 ## Uncomment the config-override volume mount, and redeploy
 ## Delete the tmp configmap
 
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: technitium-dns
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: technitium-dns
+  namespace: technitium-dns
+  annotations:
+    metallb.universe.tf/address-pool: default-pool
+spec:
+  selector:
+    app: technitium-dns
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.10
+  ports:
+  - name: dns
+    protocol: UDP
+    port: 53
+    targetPort: 53
+  - name: http
+    protocol: TCP
+    port: 5380
+    targetPort: 5380
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,9 +57,6 @@ spec:
       labels:
         app: technitium-dns
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: pi1
-      hostNetwork: true
       containers:
       - name: technitium-dns
         image: technitium/dns-server:latest
@@ -56,6 +78,7 @@ spec:
       - name: config-override
         configMap:
           name: config-override
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -69,6 +92,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -83,6 +107,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: /mnt/technitium-dns-config
+
 ---
 apiVersion: v1
 kind: ConfigMap
