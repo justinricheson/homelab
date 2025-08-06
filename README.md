@@ -63,3 +63,6 @@
     	- `KUBECONFIG=~/.kube/config-pi1 kubectl apply -f my-service.yaml` OR
     	- `install.sh`
 
+## TODO
+
+- [Configure technitium with api](https://github.com/TechnitiumSoftware/DnsServer/blob/master/APIDOCS.md)
