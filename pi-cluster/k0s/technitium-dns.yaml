@@ -38,6 +38,47 @@ spec:
     targetPort: 5380
 
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: technitium-dns
+  namespace: technitium-dns
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: dns.home.justinricheson.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: technitium-dns
+            port:
+              number: 5380
+  tls:
+  - hosts:
+    - dns.home.justinricheson.com
+    secretName: wildcard-tls
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-cert
+  namespace: technitium-dns
+spec:
+  secretName: wildcard-tls
+  commonName: '*.home.justinricheson.com'
+  dnsNames:
+    - '*.home.justinricheson.com'
+  issuerRef:
+    name: letsencrypt-wildcard
+    kind: ClusterIssuer
+  privateKey:
+    rotationPolicy: Always
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

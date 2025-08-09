@@ -56,6 +56,9 @@
 
 - Deployments
   - Push technitium, etc
-    - `KUBECONFIG=~/.kube/config-pi1 kubectl apply -f my-service.yaml` OR
     - `install.sh`
   - Restore technitium settings
+
+## TODO
+
+- Backup dns zone settings
