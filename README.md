@@ -58,7 +58,3 @@
   - Push technitium, etc
     - `install.sh`
   - Restore technitium settings
-
-## TODO
-
-- Backup dns zone settings
