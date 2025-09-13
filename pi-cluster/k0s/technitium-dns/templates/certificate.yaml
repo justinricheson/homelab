@@ -6,9 +6,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   secretName: wildcard-tls
-  commonName: '*.home.justinricheson.com'
+  commonName: "{{ .Values.cert.dnsName }}"
   dnsNames:
-    - '*.home.justinricheson.com'
+    - "{{ .Values.cert.dnsName }}"
   issuerRef:
     name: letsencrypt-wildcard
     kind: ClusterIssuer

@@ -1,4 +1,21 @@
-image:
-  repository: technitium/dns-server
-  pullPolicy: IfNotPresent
-  tag: "13.6.0"
+app:
+  name: technitium-dns
+  node: pi1 # Make sure volume and deployment are on the same node
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+ingress:
+  dnsName: dns.home.justinricheson.com
+
+service:
+  ip: 192.168.0.10
+
+deployment:
+  image:
+    repository: technitium/dns-server
+    pullPolicy: IfNotPresent
+    tag: "13.6.0"
+
+volumes:
+  size: 1Gi

@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: technitium-dns
+  name: {{ .Values.app.name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: technitium-dns
+    app: {{ .Values.app.name }}
 spec:
   replicas: 1
   strategy:
@@ -14,16 +14,15 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: technitium-dns
+      app: {{ .Values.app.name }}
   template:
     metadata:
       labels:
-        app: technitium-dns
+        app: {{ .Values.app.name }}
     spec:
       containers:
-      - name: technitium-dns
-        image: technitium/dns-server:latest
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      - name: {{ .Values.app.name }}
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         ports:
         - containerPort: 53
         - containerPort: 5380
@@ -36,4 +35,4 @@ spec:
         persistentVolumeClaim:
           claimName: config-pvc
       nodeSelector:
-        kubernetes.io/hostname: pi1 # Make sure volume and dp are on same node
+        kubernetes.io/hostname: {{ .Values.app.node }}
