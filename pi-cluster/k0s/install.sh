@@ -36,7 +36,6 @@ else
     --values ./traefik-prep/secrets.yaml
 fi
 
-kubectl apply -f traefik.yaml
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
 if helm status traefik -n traefik >/dev/null 2>&1; then

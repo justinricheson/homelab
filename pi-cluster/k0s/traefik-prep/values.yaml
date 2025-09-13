@@ -1,3 +1,6 @@
+cert:
+  dnsName: "home.justinricheson.com"
+
 secret:
   # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
   hashedUsers: "put the result in secrets.yaml"
