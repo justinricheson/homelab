@@ -5,15 +5,15 @@ metadata:
   name: letsencrypt-wildcard
 spec:
   acme:
-    email: hostadmin@home.justinricheson.com
-    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.clusterIssuer.email }}
+    server: {{ .Values.clusterIssuer.server }}
     privateKeySecretRef:
       name: letsencrypt-wildcard-account-key
     solvers:
     - dns01:
         route53:
-          region: us-east-1
-          accessKeyID: AKIA3P4XWQ6F3XW6QNYC
+          region: {{ .Values.clusterIssuer.region }}
+          accessKeyID: {{ .Values.clusterIssuer.accessKeyId }}
           secretAccessKeySecretRef:
             name: route53-credentials-secret
             key: secret-access-key

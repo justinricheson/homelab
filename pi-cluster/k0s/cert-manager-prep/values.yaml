@@ -1,4 +1,0 @@
-secret:
-  # Get from password vault
-  accessKeyId: "put the result in secrets.yaml"
-  secretAccessKey: "put the result in secrets.yaml"

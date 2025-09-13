@@ -8,19 +8,18 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/confi
 kubectl apply -f ip-pool.yaml
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
-kubectl apply -f cert-issuer.yaml
 
-if helm status cert-manager-prep -n cert-manager >/dev/null 2>&1; then
-  helm upgrade cert-manager-prep ./cert-manager-prep \
+if helm status cert-manager-post -n cert-manager >/dev/null 2>&1; then
+  helm upgrade cert-manager-post ./cert-manager-post \
     --namespace cert-manager \
-    --values ./cert-manager-prep/values.yaml \
-    --values ./cert-manager-prep/secrets.yaml
+    --values ./cert-manager-post/values.yaml \
+    --values ./cert-manager-post/secrets.yaml
 else
-  helm install cert-manager-prep ./cert-manager-prep \
+  helm install cert-manager-post ./cert-manager-post \
     --create-namespace \
     --namespace cert-manager \
-    --values ./cert-manager-prep/values.yaml \
-    --values ./cert-manager-prep/secrets.yaml
+    --values ./cert-manager-post/values.yaml \
+    --values ./cert-manager-post/secrets.yaml
 fi
 
 if helm status traefik-prep -n traefik >/dev/null 2>&1; then
