@@ -8,9 +8,6 @@ echo
 read -rsp "Enter the aws secret access key: " SECRET_ACCESS_KEY
 echo
 
-read -rsp "Enter the traefik admin password: " ADMIN_PASSWORD
-echo
-
 export KUBECONFIG=~/.kube/config-pi1
 
 kubectl create namespace cert-manager
@@ -19,22 +16,27 @@ kubectl create secret generic route53-credentials-secret \
   --from-literal=secret-access-key="$SECRET_ACCESS_KEY" \
   -n cert-manager
 
-HASHED=$(htpasswd -nbB admin "$ADMIN_PASSWORD" | cut -d ':' -f2-)
-kubectl create namespace traefik
-kubectl create secret generic traefik-auth-secret \
-  --from-literal=users="admin:$HASHED" \
-  -n traefik
-
 unset ACCESS_KEY_ID
 unset SECRET_ACCESS_KEY
-unset ADMIN_PASSWORD
-unset HASHED
 
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
 kubectl apply -f ip-pool.yaml
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
 kubectl apply -f cert-issuer.yaml
+
+if helm status traefik-prep -n traefik >/dev/null 2>&1; then
+  helm upgrade traefik-prep ./traefik-prep \
+    --namespace traefik \
+    --values ./traefik-prep/values.yaml \
+    --values ./traefik-prep/secrets.yaml
+else
+  helm install traefik-prep ./traefik-prep \
+    --create-namespace \
+    --namespace traefik \
+    --values ./traefik-prep/values.yaml \
+    --values ./traefik-prep/secrets.yaml
+fi
 
 kubectl apply -f traefik.yaml
 helm repo add traefik https://traefik.github.io/charts
@@ -43,12 +45,12 @@ if helm status traefik -n traefik >/dev/null 2>&1; then
   helm upgrade traefik traefik/traefik \
     --namespace traefik \
     --version 37.0.0 \
-    --values traefik-values.yaml
+    --values ./traefik/values.yaml
 else
   helm install traefik traefik/traefik \
     --namespace traefik \
     --version 37.0.0 \
-    --values traefik-values.yaml
+    --values ./traefik/values.yaml
 fi
 
 if helm status technitium-dns -n technitium-dns >/dev/null 2>&1; then

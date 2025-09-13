@@ -1,6 +1,6 @@
 app:
   name: technitium-dns
-  node: pi1 # Make sure volume and deployment are on the same node
+  node: pi1 # Ensures the volume and deployment are on the same node
 
 cert:
   dnsName: "*.home.justinricheson.com"
@@ -14,7 +14,6 @@ service:
 deployment:
   image:
     repository: technitium/dns-server
-    pullPolicy: IfNotPresent
     tag: "13.6.0"
 
 volumes:
