@@ -1,6 +1,6 @@
 apiVersion: v2
-name: traefik-prep
-description: A Helm chart for preparing traefik
+name: cert-manager-prep
+description: A Helm chart for preparing cert-manager
 
 type: application
 

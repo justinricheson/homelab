@@ -2,28 +2,26 @@
 
 set -e
 
-read -rsp "Enter the aws access key id: " ACCESS_KEY_ID
-echo
-
-read -rsp "Enter the aws secret access key: " SECRET_ACCESS_KEY
-echo
-
 export KUBECONFIG=~/.kube/config-pi1
-
-kubectl create namespace cert-manager
-kubectl create secret generic route53-credentials-secret \
-  --from-literal=access-key-id="$ACCESS_KEY_ID" \
-  --from-literal=secret-access-key="$SECRET_ACCESS_KEY" \
-  -n cert-manager
-
-unset ACCESS_KEY_ID
-unset SECRET_ACCESS_KEY
 
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
 kubectl apply -f ip-pool.yaml
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
 kubectl apply -f cert-issuer.yaml
+
+if helm status cert-manager-prep -n cert-manager >/dev/null 2>&1; then
+  helm upgrade cert-manager-prep ./cert-manager-prep \
+    --namespace cert-manager \
+    --values ./cert-manager-prep/values.yaml \
+    --values ./cert-manager-prep/secrets.yaml
+else
+  helm install cert-manager-prep ./cert-manager-prep \
+    --create-namespace \
+    --namespace cert-manager \
+    --values ./cert-manager-prep/values.yaml \
+    --values ./cert-manager-prep/secrets.yaml
+fi
 
 if helm status traefik-prep -n traefik >/dev/null 2>&1; then
   helm upgrade traefik-prep ./traefik-prep \
