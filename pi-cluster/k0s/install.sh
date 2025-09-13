@@ -39,8 +39,25 @@ kubectl apply -f cert-issuer.yaml
 kubectl apply -f traefik.yaml
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
-helm install traefik traefik/traefik \
-  --namespace traefik \
-  --values traefik-values.yaml
+if helm status traefik -n traefik >/dev/null 2>&1; then
+  helm upgrade traefik traefik/traefik \
+    --namespace traefik \
+    --version 37.0.0 \
+    --values traefik-values.yaml
+else
+  helm install traefik traefik/traefik \
+    --namespace traefik \
+    --version 37.0.0 \
+    --values traefik-values.yaml
+fi
 
-kubectl apply -f technitium-dns.yaml
+if helm status technitium-dns -n technitium-dns >/dev/null 2>&1; then
+  helm upgrade technitium-dns ./technitium-dns \
+    --namespace technitium-dns \
+    --values ./technitium-dns/values.yaml
+else
+  helm install technitium-dns ./technitium-dns \
+    --create-namespace \
+    --namespace technitium-dns \
+    --values ./technitium-dns/values.yaml
+fi

@@ -1,0 +1,16 @@
+# Settings
+settings/
+
+# Mac
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*.orig
+*~

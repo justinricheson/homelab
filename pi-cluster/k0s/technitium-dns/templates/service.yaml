@@ -1,0 +1,28 @@
+# externalTrafficPolicy: Local is used so that the ip is only advertised from node(s) where the pod is running.
+# Without this, MetalLB will arp advertise the ip on all nodes, and internally proxy requests when they land on a node where the pod isn't running.
+# However, doing this means that the requests are internally NAT'ed, causing the source ip's to be replaced with an internal k8s ip.
+# This causes technitium to show all requests coming from a single internal ip.
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: technitium-dns
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    metallb.universe.tf/address-pool: default-pool
+spec:
+  selector:
+    app: technitium-dns
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.10
+  externalTrafficPolicy: Local
+  ports:
+  - name: dns
+    protocol: UDP
+    port: 53
+    targetPort: 53
+  - name: http
+    protocol: TCP
+    port: 5380
+    targetPort: 5380

@@ -6,9 +6,13 @@
 
 - Reserve an ip range for MetalLb
   - 192.168.0.2 -> 192.168.0.20
-- Setup dns/dhcp on router
-  - Should be 192.168.0.10 (statically assigned in k8s/dns config)
-  - Create firewall rule (Lan IN) to allow IOT vlan to use 192.168.0.10:53
+- Setup dhcp on router
+  - DNS should be 192.168.0.10 (statically assigned in k0s/metallb config)
+  - Create firewall rules for IOT vlan
+    - Allow any -> 192.168.0.10:53
+    - Allow any -> Default vlan (established/related)
+    - Allow any -> internet
+    - Deny any -> any
 
 ### Pi Setup
 

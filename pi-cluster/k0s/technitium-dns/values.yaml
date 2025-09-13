@@ -1,0 +1,4 @@
+image:
+  repository: technitium/dns-server
+  pullPolicy: IfNotPresent
+  tag: "13.6.0"

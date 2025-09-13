@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: technitium-dns
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: technitium-dns
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: technitium-dns
+  template:
+    metadata:
+      labels:
+        app: technitium-dns
+    spec:
+      containers:
+      - name: technitium-dns
+        image: technitium/dns-server:latest
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 53
+        - containerPort: 5380
+        volumeMounts:
+        - name: config
+          mountPath: /etc/dns
+          readOnly: false
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: config-pvc
+      nodeSelector:
+        kubernetes.io/hostname: pi1 # Make sure volume and dp are on same node
