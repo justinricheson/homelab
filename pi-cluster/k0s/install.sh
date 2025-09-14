@@ -4,9 +4,14 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
+VERSION_METALLB=0.15.2        # https://metallb.io         - helm search repo metallb/metallb --versions
+VERSION_CERT_MANAGER=v1.18.2  # https://cert-manager.io    - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
+VERSION_TRAEFIK=37.0.0        # https://traefik.io         - helm search repo traefik/traefik --versions
+VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns - https://hub.docker.com/r/technitium/dns-server/tags
+
 helm repo add metallb https://metallb.github.io/metallb
 helm upgrade metallb metallb/metallb \
-  --version 0.15.2 \
+  --version $VERSION_METALLB \
   --values ./metallb/values.yaml \
   --namespace metallb-system \
   --create-namespace \
@@ -19,7 +24,7 @@ helm upgrade metallb-post ./metallb-post \
   --install
 
 helm upgrade cert-manager oci://quay.io/jetstack/charts/cert-manager \
-  --version v1.18.2 \
+  --version $VERSION_CERT_MANAGER \
   --set crds.enabled=true \
   --values ./cert-manager/values.yaml \
   --namespace cert-manager \
@@ -42,7 +47,7 @@ helm upgrade traefik-prep ./traefik-prep \
 
 helm repo add traefik https://traefik.github.io/charts
 helm upgrade traefik traefik/traefik \
-  --version 37.0.0 \
+  --version $VERSION_TRAEFIK \
   --values ./traefik/values.yaml \
   --namespace traefik \
   --create-namespace \
@@ -50,6 +55,7 @@ helm upgrade traefik traefik/traefik \
 
 helm upgrade technitium-dns ./technitium-dns \
   --values ./technitium-dns/values.yaml \
+  --set deployment.image.tag=$VERSION_TECHNITIUM \
   --namespace technitium-dns \
   --create-namespace \
   --install
