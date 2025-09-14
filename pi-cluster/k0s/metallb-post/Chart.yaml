@@ -1,6 +1,6 @@
 apiVersion: v2
-name: traefik-prep
-description: A Helm chart for preparing traefik
+name: metallb-post
+description: A Helm chart for metallb post setup
 type: application
 
 version: 0.1.0

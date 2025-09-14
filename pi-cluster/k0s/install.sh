@@ -5,37 +5,54 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 
 # kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
-# kubectl apply -f ip-pool.yaml
+# kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
+
+# helm repo add metallb https://metallb.github.io/metallb
+# helm upgrade metallb metallb/metallb \
+#   --version 0.15.2 \
+#   --values ./metallb/values.yaml \
+#   --namespace metallb-system \
+#   --create-namespace \
+#   --install
+
+helm upgrade metallb-post ./metallb-post \
+  --values ./metallb-post/values.yaml \
+  --namespace metallb-system \
+  --create-namespace \
+  --install
 
 helm upgrade cert-manager oci://quay.io/jetstack/charts/cert-manager \
-  --install \
-  --create-namespace \
-  --namespace cert-manager \
   --version v1.18.2 \
   --set crds.enabled=true \
-  --values ./cert-manager/values.yaml
+  --values ./cert-manager/values.yaml \
+  --namespace cert-manager \
+  --create-namespace \
+  --install
 
 helm upgrade cert-manager-post ./cert-manager-post \
-  --install \
-  --namespace cert-manager \
   --values ./cert-manager-post/values.yaml \
-  --values ./cert-manager-post/secrets.yaml
+  --values ./cert-manager-post/secrets.yaml \
+  --namespace cert-manager \
+  --create-namespace \
+  --install
 
 helm upgrade traefik-prep ./traefik-prep \
-  --install \
-  --namespace traefik \
   --values ./traefik-prep/values.yaml \
-  --values ./traefik-prep/secrets.yaml
+  --values ./traefik-prep/secrets.yaml \
+  --namespace traefik \
+  --create-namespace \
+  --install
 
 helm repo add traefik https://traefik.github.io/charts
-helm repo update
 helm upgrade traefik traefik/traefik \
-  --install \
-  --namespace traefik \
   --version 37.0.0 \
-  --values ./traefik/values.yaml
+  --values ./traefik/values.yaml \
+  --namespace traefik \
+  --create-namespace \
+  --install
 
 helm upgrade technitium-dns ./technitium-dns \
-  --install \
+  --values ./technitium-dns/values.yaml \
   --namespace technitium-dns \
-  --values ./technitium-dns/values.yaml
+  --create-namespace \
+  --install
