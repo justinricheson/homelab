@@ -4,16 +4,13 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
-# kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
-# kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
-
-# helm repo add metallb https://metallb.github.io/metallb
-# helm upgrade metallb metallb/metallb \
-#   --version 0.15.2 \
-#   --values ./metallb/values.yaml \
-#   --namespace metallb-system \
-#   --create-namespace \
-#   --install
+helm repo add metallb https://metallb.github.io/metallb
+helm upgrade metallb metallb/metallb \
+  --version 0.15.2 \
+  --values ./metallb/values.yaml \
+  --namespace metallb-system \
+  --create-namespace \
+  --install
 
 helm upgrade metallb-post ./metallb-post \
   --values ./metallb-post/values.yaml \
