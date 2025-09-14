@@ -11,9 +11,8 @@ spec:
       name: letsencrypt-wildcard-account-key
     solvers:
     - dns01:
-        route53:
-          region: {{ .Values.clusterIssuer.region }}
-          accessKeyID: {{ .Values.clusterIssuer.accessKeyId }}
-          secretAccessKeySecretRef:
-            name: route53-credentials-secret
-            key: secret-access-key
+        cloudflare:
+          email: unused@example.com # Required but ignored when using token
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token

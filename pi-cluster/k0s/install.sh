@@ -9,6 +9,7 @@ VERSION_CERT_MANAGER=v1.18.2  # https://cert-manager.io    - https://quay.io/rep
 VERSION_TRAEFIK=37.0.0        # https://traefik.io         - helm search repo traefik/traefik --versions
 VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns - https://hub.docker.com/r/technitium/dns-server/tags
 
+echo -e "\n\nInstalling metallb =============================="
 helm repo add metallb https://metallb.github.io/metallb
 helm upgrade metallb metallb/metallb \
   --version $VERSION_METALLB \
@@ -17,12 +18,14 @@ helm upgrade metallb metallb/metallb \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling metallb-post ========================="
 helm upgrade metallb-post ./metallb-post \
   --values ./metallb-post/values.yaml \
   --namespace metallb-system \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling cert-manager ========================="
 helm upgrade cert-manager oci://quay.io/jetstack/charts/cert-manager \
   --version $VERSION_CERT_MANAGER \
   --set crds.enabled=true \
@@ -31,6 +34,7 @@ helm upgrade cert-manager oci://quay.io/jetstack/charts/cert-manager \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling cert-manager-post ====================="
 helm upgrade cert-manager-post ./cert-manager-post \
   --values ./cert-manager-post/values.yaml \
   --values ./cert-manager-post/secrets.yaml \
@@ -38,6 +42,7 @@ helm upgrade cert-manager-post ./cert-manager-post \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling traefik-prep =========================="
 helm upgrade traefik-prep ./traefik-prep \
   --values ./traefik-prep/values.yaml \
   --values ./traefik-prep/secrets.yaml \
@@ -45,6 +50,7 @@ helm upgrade traefik-prep ./traefik-prep \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling traefik ==============================="
 helm repo add traefik https://traefik.github.io/charts
 helm upgrade traefik traefik/traefik \
   --version $VERSION_TRAEFIK \
@@ -53,6 +59,7 @@ helm upgrade traefik traefik/traefik \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling technitium-dns ========================"
 helm upgrade technitium-dns ./technitium-dns \
   --values ./technitium-dns/values.yaml \
   --set deployment.image.tag=$VERSION_TECHNITIUM \

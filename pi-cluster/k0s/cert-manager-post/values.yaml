@@ -1,11 +1,8 @@
 clusterIssuer:
-  email: hostadmin@home.justinricheson.com
+  email: admin@home.justinricheson.com
   server: https://acme-v02.api.letsencrypt.org/directory
   #server: https://acme-staging-v02.api.letsencrypt.org/directory
-  region: us-east-1
-  accessKeyId: AKIA3P4XWQ6F3XW6QNYC
 
 secret:
   # Get from password vault
-  accessKeyId: "put the result in secrets.yaml"
-  secretAccessKey: "put the result in secrets.yaml"
+  apiToken: "put the result in secrets.yaml"
