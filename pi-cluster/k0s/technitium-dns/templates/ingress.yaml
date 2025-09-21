@@ -14,7 +14,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.app.name }}
+            name: {{ .Values.app.name }}-ui
             port:
               number: 5380
   tls:
