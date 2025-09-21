@@ -54,6 +54,11 @@
     - `sudo apt full-upgrade -y`
     - `sudo apt autoremove -y`
     - `sudo reboot`
+  - Setup iscsi (for longhorn)
+    - `sudo apt-get install -y open-iscsi`
+    - `sudo reboot`
+    - `sudo systemctl enable iscsid`
+    - `sudo systemctl start iscsid`
 
 - K0s
   - Enable cgroups

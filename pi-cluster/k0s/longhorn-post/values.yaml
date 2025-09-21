@@ -1,0 +1,11 @@
+app:
+  name: longhorn-ui
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+ingress:
+  dnsName: storage.home.justinricheson.com
+
+service:
+  ip: 192.168.0.12
