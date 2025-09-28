@@ -1,0 +1,20 @@
+app:
+  name: go2rtc
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+ingress:
+  dnsName: cams.home.justinricheson.com
+
+service:
+  ip: 192.168.0.13
+
+deployment:
+  image:
+    repository: alexxit/go2rtc
+    tag: "latest"
+
+secret:
+  # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
+  hashedUsers: "put the result in secrets.yaml"

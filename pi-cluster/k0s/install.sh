@@ -4,11 +4,12 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
-VERSION_METALLB=0.15.2        # https://metallb.io         - helm search repo metallb/metallb --versions
-VERSION_CERT_MANAGER=v1.18.2  # https://cert-manager.io    - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
-VERSION_TRAEFIK=37.0.0        # https://traefik.io         - helm search repo traefik/traefik --versions
-VERSION_LONGHORN=1.9.1        # https://longhorn.io        - helm search repo longhorn --versions
-VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns - https://hub.docker.com/r/technitium/dns-server/tags
+VERSION_METALLB=0.15.2        # https://metallb.io                - helm search repo metallb/metallb --versions
+VERSION_CERT_MANAGER=v1.18.2  # https://cert-manager.io           - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
+VERSION_TRAEFIK=37.0.0        # https://traefik.io                - helm search repo traefik/traefik --versions
+VERSION_LONGHORN=1.9.1        # https://longhorn.io               - helm search repo longhorn --versions
+VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
+VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
 
 helm repo update
 helm repo add metallb https://metallb.github.io/metallb
@@ -93,5 +94,15 @@ helm upgrade technitium-dns ./technitium-dns \
   --values ./technitium-dns/values.yaml \
   --set deployment.image.tag=$VERSION_TECHNITIUM \
   --namespace technitium-dns \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling go2rtc"
+echo -e "=========================================================================================="
+helm upgrade go2rtc ./go2rtc \
+  --values ./go2rtc/values.yaml \
+  --values ./go2rtc/secrets.yaml \
+  --set deployment.image.tag=$VERSION_GO2RTC \
+  --namespace go2rtc \
   --create-namespace \
   --install

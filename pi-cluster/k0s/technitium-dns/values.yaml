@@ -13,7 +13,7 @@ service:
 deployment:
   image:
     repository: technitium/dns-server
-    tag: "13.6.0"
+    tag: "latest"
 
 volumes:
   size: 1Gi

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: go2rtc
+description: A Helm chart for go2rtc
+type: application
+
+version: 0.1.0
+appVersion: "latest"
