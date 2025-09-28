@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  go2rtc.yaml: |
+    streams:
+      doorbell_main:
+        - rtsp://stream:{{ .Values.secret.camDoorbellPW }}@192.168.3.10/Preview_01_main
+      doorbell_sub:
+        - rtsp://stream:{{ .Values.secret.camDoorbellPW }}@192.168.3.10/Preview_01_sub

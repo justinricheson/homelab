@@ -25,3 +25,11 @@ spec:
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         ports:
         - containerPort: 1984
+        volumeMounts:
+          - name: config
+            mountPath: /config
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.app.name }}
