@@ -7,9 +7,6 @@ cert:
 ingress:
   dnsName: storage.home.justinricheson.com
 
-service:
-  ip: 192.168.0.12
-
 secret:
   # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
   hashedUsers: "put the result in secrets.yaml"

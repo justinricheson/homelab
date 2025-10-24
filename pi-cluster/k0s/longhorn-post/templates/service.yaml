@@ -4,13 +4,10 @@ kind: Service
 metadata:
   name: {{ .Values.app.name }}
   namespace: {{ .Release.Namespace }}
-  annotations:
-    metallb.universe.tf/address-pool: default-pool
 spec:
   selector:
     app: {{ .Values.app.name }}
   type: ClusterIP
-  loadBalancerIP: {{ .Values.service.ip }}
   ports:
   - name: http
     protocol: TCP
