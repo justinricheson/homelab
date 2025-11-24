@@ -1,0 +1,7 @@
+apiVersion: v2
+name: frigate-post
+description: A Helm chart for frigate post setup
+type: application
+
+version: 0.1.0
+appVersion: "latest"

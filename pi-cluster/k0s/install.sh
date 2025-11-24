@@ -125,3 +125,12 @@ helm upgrade frigate blakeblackshear/frigate \
   --namespace frigate \
   --create-namespace \
   --install
+
+echo -e "\n\nInstalling frigate-post"
+echo -e "=========================================================================================="
+helm upgrade frigate-post ./frigate-post \
+  --values ./frigate-post/values.yaml \
+  --values ./frigate-post/secrets.yaml \
+  --namespace frigate \
+  --create-namespace \
+  --install
