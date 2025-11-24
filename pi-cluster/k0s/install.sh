@@ -10,11 +10,13 @@ VERSION_TRAEFIK=37.0.0        # https://traefik.io                - helm search 
 VERSION_LONGHORN=1.9.1        # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
+VERSION_FRIGATE=7.8.0         # https://frigate.video             - https://blakeblackshear.github.io/blakeshome-charts
 
 helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
+helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
@@ -104,5 +106,22 @@ helm upgrade go2rtc ./go2rtc \
   --values ./go2rtc/secrets.yaml \
   --set deployment.image.tag=$VERSION_GO2RTC \
   --namespace go2rtc \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling frigate-prep"
+echo -e "=========================================================================================="
+helm upgrade frigate-prep ./frigate-prep \
+  --values ./frigate-prep/values.yaml \
+  --namespace frigate \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling frigate"
+echo -e "=========================================================================================="
+helm upgrade frigate blakeblackshear/frigate \
+  --version $VERSION_FRIGATE \
+  --values ./frigate/values.yaml \
+  --namespace frigate \
   --create-namespace \
   --install

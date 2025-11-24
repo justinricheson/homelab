@@ -1,0 +1,7 @@
+apiVersion: v2
+name: frigate-prep
+description: A Helm chart for preparing frigate
+type: application
+
+version: 0.1.0
+appVersion: "latest"

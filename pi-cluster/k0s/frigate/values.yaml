@@ -1,0 +1,18 @@
+config: |
+  mqtt:
+    host: "mqtt.example.com"
+    port: 1883
+    user: admin
+    password: "todo"
+  cameras:
+    back:
+      ffmpeg:
+        inputs:
+          - path: rtsp://viewer:foo-pw@10.0.10.10:554/cam/realmonitor?channel=1&subtype=2
+            roles:
+              - detect
+
+persistence:
+  media:
+    enabled: true
+    existingClaim: frigate-media

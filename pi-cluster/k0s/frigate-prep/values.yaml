@@ -1,0 +1,5 @@
+app:
+  name: frigate
+
+volumes:
+  size: 100Gi
