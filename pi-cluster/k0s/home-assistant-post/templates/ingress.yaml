@@ -4,8 +4,10 @@ kind: Ingress
 metadata:
   name: {{ .Values.app.name }}
   namespace: {{ .Release.Namespace }}
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Values.app.name }}-auth@kubernetescrd
+  # Disable traefik auth middleware for now
+  # HA makes it difficult to disable native auth
+  # annotations:
+  #   traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Values.app.name }}-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
