@@ -3,7 +3,7 @@ config: |
     enabled: false
   mqtt:
     enabled: true
-    host: "mqtt.nvr.home.justinricheson.com"
+    host: mosquitto.mosquitto.svc.cluster.local
     port: 1883
   detectors:
     cpu1:
