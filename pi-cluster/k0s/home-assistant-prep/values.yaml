@@ -1,5 +1,0 @@
-app:
-  name: home-assistant
-
-volumes:
-  size: 10Gi

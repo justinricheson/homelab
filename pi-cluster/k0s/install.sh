@@ -10,17 +10,14 @@ VERSION_TRAEFIK=37.0.0        # https://traefik.io                - helm search 
 VERSION_LONGHORN=1.9.1        # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
-#VERSION_MOSQUITTO=2.0.22      # https://mosquitto.org             - https://hub.docker.com/_/eclipse-mosquitto/tags
 VERSION_FRIGATE=7.8.0         # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
 VERSION_FRIGATE_IMG=0.16.1    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
-#VERSION_HOME_ASSISTANT=0.3.32 # https://home-assistant.io         - helm search repo pajikos/home-assistant --versions
 
 helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
-#helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
@@ -113,15 +110,6 @@ helm upgrade go2rtc ./go2rtc \
   --create-namespace \
   --install
 
-# echo -e "\n\nInstalling mosquitto"
-# echo -e "=========================================================================================="
-# helm upgrade mosquitto ./mosquitto \
-#   --values ./mosquitto/values.yaml \
-#   --set deployment.image.tag=$VERSION_MOSQUITTO \
-#   --namespace mosquitto \
-#   --create-namespace \
-#   --install
-
 echo -e "\n\nInstalling frigate-prep"
 echo -e "=========================================================================================="
 helm upgrade frigate-prep ./frigate-prep \
@@ -149,29 +137,3 @@ helm upgrade frigate-post ./frigate-post \
   --create-namespace \
   --install
 ./frigate-post/scripts/patch-service-port-name.sh
-
-# echo -e "\n\nInstalling home-assistant-prep"
-# echo -e "=========================================================================================="
-# helm upgrade home-assistant-prep ./home-assistant-prep \
-#   --values ./home-assistant-prep/values.yaml \
-#   --namespace home-assistant \
-#   --create-namespace \
-#   --install
-
-# echo -e "\n\nInstalling home-assistant"
-# echo -e "=========================================================================================="
-# helm upgrade home-assistant pajikos/home-assistant \
-#   --version $VERSION_HOME_ASSISTANT \
-#   --values ./home-assistant/values.yaml \
-#   --namespace home-assistant \
-#   --create-namespace \
-#   --install
-
-# echo -e "\n\nInstalling home-assistant-post"
-# echo -e "=========================================================================================="
-# helm upgrade home-assistant-post ./home-assistant-post \
-#   --values ./home-assistant-post/values.yaml \
-#   --values ./home-assistant-post/secrets.yaml \
-#   --namespace home-assistant \
-#   --create-namespace \
-#   --install
