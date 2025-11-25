@@ -12,6 +12,7 @@ VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.
 VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
 #VERSION_MOSQUITTO=2.0.22      # https://mosquitto.org             - https://hub.docker.com/_/eclipse-mosquitto/tags
 VERSION_FRIGATE=7.8.0         # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
+VERSION_FRIGATE_IMG=0.16.2    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
 #VERSION_HOME_ASSISTANT=0.3.32 # https://home-assistant.io         - helm search repo pajikos/home-assistant --versions
 
 helm repo update
@@ -134,6 +135,7 @@ echo -e "=======================================================================
 helm upgrade frigate blakeblackshear/frigate \
   --version $VERSION_FRIGATE \
   --values ./frigate/values.yaml \
+  --set image.tag=$VERSION_FRIGATE_IMG \
   --namespace frigate \
   --create-namespace \
   --install

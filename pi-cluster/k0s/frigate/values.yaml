@@ -10,9 +10,12 @@ config: |
       type: cpu
   record:
     enabled: true
-    retain:
-      days: 7
-      mode: motion
+    alerts:
+      retain:
+        days: 30
+    detections:
+      retain:
+        days: 30
   snapshots:
     enabled: true
     retain:
