@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: {{ .Release.Namespace }}
+data:
+  mosquitto.conf: |
+    listener 1883
+    persistence false
+    allow_anonymous true

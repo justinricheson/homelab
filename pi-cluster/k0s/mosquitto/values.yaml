@@ -1,0 +1,7 @@
+app:
+  name: mosquitto
+
+deployment:
+  image:
+    repository: "eclipse-mosquitto"
+    tag: "latest"

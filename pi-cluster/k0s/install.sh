@@ -10,6 +10,7 @@ VERSION_TRAEFIK=37.0.0        # https://traefik.io                - helm search 
 VERSION_LONGHORN=1.9.1        # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
+VERSION_MOSQUITTO=2.0.22      # https://mosquitto.org             - https://hub.docker.com/_/eclipse-mosquitto/tags
 VERSION_FRIGATE=7.8.0         # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
 VERSION_HOME_ASSISTANT=0.3.32 # https://home-assistant.io         - helm search repo pajikos/home-assistant --versions
 
@@ -108,6 +109,15 @@ helm upgrade go2rtc ./go2rtc \
   --values ./go2rtc/secrets.yaml \
   --set deployment.image.tag=$VERSION_GO2RTC \
   --namespace go2rtc \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling mosquitto"
+echo -e "=========================================================================================="
+helm upgrade mosquitto ./mosquitto \
+  --values ./mosquitto/values.yaml \
+  --set deployment.image.tag=$VERSION_MOSQUITTO \
+  --namespace mosquitto \
   --create-namespace \
   --install
 
