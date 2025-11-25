@@ -10,13 +10,15 @@ VERSION_TRAEFIK=37.0.0        # https://traefik.io                - helm search 
 VERSION_LONGHORN=1.9.1        # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM=13.6.0     # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
-VERSION_FRIGATE=7.8.0         # https://frigate.video             - https://blakeblackshear.github.io/blakeshome-charts
+VERSION_FRIGATE=7.8.0         # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
+VERSION_HOME_ASSISTANT=0.3.32 # https://home-assistant.io         - helm search repo pajikos/home-assistant --versions
 
 helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
+helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
@@ -132,5 +134,31 @@ helm upgrade frigate-post ./frigate-post \
   --values ./frigate-post/values.yaml \
   --values ./frigate-post/secrets.yaml \
   --namespace frigate \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling home-assistant-prep"
+echo -e "=========================================================================================="
+helm upgrade home-assistant-prep ./home-assistant-prep \
+  --values ./home-assistant-prep/values.yaml \
+  --namespace home-assistant \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling home-assistant"
+echo -e "=========================================================================================="
+helm upgrade home-assistant pajikos/home-assistant \
+  --version $VERSION_HOME_ASSISTANT \
+  --values ./home-assistant/values.yaml \
+  --namespace home-assistant \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling home-assistant-post"
+echo -e "=========================================================================================="
+helm upgrade home-assistant-post ./home-assistant-post \
+  --values ./home-assistant-post/values.yaml \
+  --values ./home-assistant-post/secrets.yaml \
+  --namespace home-assistant \
   --create-namespace \
   --install

@@ -1,0 +1,35 @@
+# Only 1 instance can ever be running at once. Without this, reboots
+# will fail because the new pod will detect the old one still running.
+deploymentStrategy: Recreate
+controller:
+  type: Deployment
+persistence:
+  enabled: true
+  existingClaim: "home-assistant-pvc"
+ingress:
+  external: true
+
+configuration:
+  enabled: true
+  forceInit: true
+  templateConfig: |-
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies:
+        - 10.244.0.0/16
+
+    homeassistant:
+      auth_providers:
+        - type: trusted_networks
+          trusted_networks:
+            - 10.244.0.0/16
+          allow_bypass_login: true
+
+    default_config:
+
+    frontend:
+      themes: !include_dir_merge_named themes
+
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml

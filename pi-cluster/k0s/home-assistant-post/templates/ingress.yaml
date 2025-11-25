@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Values.app.name }}-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Values.ingress.dnsName }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "home-assistant"
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - {{ .Values.ingress.dnsName }}
+    secretName: wildcard-tls

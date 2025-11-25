@@ -2,7 +2,7 @@ config: |
   auth:
     enabled: false
   mqtt:
-    enabled: false
+    enabled: true
     host: "mqtt.nvr.home.justinricheson.com"
     port: 1883
   detectors:
