@@ -1,6 +1,6 @@
 config: |
   auth:
-    enabled: false
+    enabled: true
   mqtt:
     enabled: false
     host: mosquitto.mosquitto.svc.cluster.local
@@ -35,6 +35,10 @@ config: |
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main?mp4
             roles:
               - record
+  notifications:
+    enabled: true
+    email: "justinricheson@icloud.com"
+    cooldown: 30
 
 persistence:
   config:
