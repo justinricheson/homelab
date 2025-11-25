@@ -13,3 +13,7 @@ spec:
     protocol: TCP
     port: 1984
     targetPort: 1984
+  - name: rtsp
+    protocol: TCP
+    port: 8554
+    targetPort: 8554

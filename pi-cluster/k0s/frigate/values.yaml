@@ -1,16 +1,37 @@
 config: |
+  auth:
+    enabled: false
   mqtt:
-    host: "mqtt.example.com"
+    enabled: false
+    host: "mqtt.nvr.home.justinricheson.com"
     port: 1883
-    user: admin
-    password: "todo"
+  detectors:
+    cpu1:
+      type: cpu
+  record:
+    enabled: true
+    retain:
+      days: 7
+      mode: all
+  snapshots:
+    enabled: true
+    retain:
+      default: 30
   cameras:
-    back:
+    doorbell:
+      enabled: true
+      detect:
+        width: 640
+        height: 480
+        fps: 5
       ffmpeg:
         inputs:
-          - path: rtsp://viewer:foo-pw@10.0.10.10:554/cam/realmonitor?channel=1&subtype=2
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_sub?mp4
             roles:
               - detect
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main?mp4
+            roles:
+              - record
 
 persistence:
   media:
