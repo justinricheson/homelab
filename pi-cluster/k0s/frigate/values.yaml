@@ -2,7 +2,7 @@ config: |
   auth:
     enabled: false
   mqtt:
-    enabled: true
+    enabled: false
     host: mosquitto.mosquitto.svc.cluster.local
     port: 1883
   detectors:
