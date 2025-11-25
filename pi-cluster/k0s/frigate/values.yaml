@@ -12,7 +12,7 @@ config: |
     enabled: true
     retain:
       days: 7
-      mode: all
+      mode: motion
   snapshots:
     enabled: true
     retain:
