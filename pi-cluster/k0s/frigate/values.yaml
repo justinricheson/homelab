@@ -34,6 +34,9 @@ config: |
               - record
 
 persistence:
+  config:
+    enabled: true
+    existingClaim: frigate-config
   media:
     enabled: true
     existingClaim: frigate-media
