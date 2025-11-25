@@ -53,10 +53,13 @@ providers:
 
 logs:
   general:
-    level: INFO
+    level: DEBUG
   access:
     enabled: true
 
 metrics:
   prometheus:
     enabled: true
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
