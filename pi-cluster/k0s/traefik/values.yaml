@@ -61,5 +61,7 @@ metrics:
   prometheus:
     enabled: true
 
+# I can't figure out any other way to get https backends working
+# Traefik's service annotations to specify a custom ServerTransport are not working
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"

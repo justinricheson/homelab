@@ -148,6 +148,7 @@ helm upgrade frigate-post ./frigate-post \
   --namespace frigate \
   --create-namespace \
   --install
+./frigate-post/scripts/patch-service-port-name.sh
 
 # echo -e "\n\nInstalling home-assistant-prep"
 # echo -e "=========================================================================================="
