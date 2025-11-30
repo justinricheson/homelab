@@ -42,7 +42,7 @@ config: |
   notifications:
     enabled: true
     email: "justinricheson@icloud.com"
-    cooldown: 30
+    cooldown: 60
 
 persistence:
   config:

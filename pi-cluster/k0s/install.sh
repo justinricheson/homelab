@@ -127,6 +127,7 @@ helm upgrade frigate blakeblackshear/frigate \
   --namespace frigate \
   --create-namespace \
   --install
+./frigate/scripts/patch-service-port-name.sh
 
 echo -e "\n\nInstalling frigate-post"
 echo -e "=========================================================================================="
@@ -136,4 +137,3 @@ helm upgrade frigate-post ./frigate-post \
   --namespace frigate \
   --create-namespace \
   --install
-./frigate-post/scripts/patch-service-port-name.sh
