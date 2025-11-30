@@ -8,6 +8,9 @@ config: |
   detectors:
     cpu1:
       type: cpu
+  motion:
+    threshold: 50
+    contour_area: 50
   record:
     enabled: true
     alerts:
