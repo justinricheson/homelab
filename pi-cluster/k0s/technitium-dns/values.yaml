@@ -8,7 +8,7 @@ ingress:
   dnsName: dns.home.justinricheson.com
 
 service:
-  ip: 192.168.0.11
+  ip: 10.10.0.11
 
 deployment:
   image:

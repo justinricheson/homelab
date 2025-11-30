@@ -8,10 +8,10 @@ data:
   go2rtc.yaml: |
     streams:
       doorbell_main:
-        - http://192.168.3.10/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=stream&password={{ .Values.secret.camDoorbellPW }}
+        - http://{{ .Values.config.cams.doorbell.ip }}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=stream&password={{ .Values.secret.cams.doorbell.pw }}
       doorbell_sub:
-        - http://192.168.3.10/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=stream&password={{ .Values.secret.camDoorbellPW }}
+        - http://{{ .Values.config.cams.doorbell.ip }}/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=stream&password={{ .Values.secret.cams.doorbell.pw }}
       # doorbell_rtsp_main:
-      #   - rtsp://stream:{{ .Values.secret.camDoorbellPW }}@192.168.3.10/Preview_01_main
+      #   - rtsp://stream:{{ .Values.secret.cams.doorbell.pw }}@{{ .Values.config.cams.doorbell.ip }}/Preview_01_main
       # doorbell_rtsp_sub:
-      #   - rtsp://stream:{{ .Values.secret.camDoorbellPW }}@192.168.3.10/Preview_01_sub
+      #   - rtsp://stream:{{ .Values.secret.cams.doorbell.pw }}@{{ .Values.config.cams.doorbell.ip }}/Preview_01_sub

@@ -1,6 +1,7 @@
 config: |
   auth:
     enabled: true
+    #reset_admin_password: true
   mqtt:
     enabled: false
     host: mosquitto.mosquitto.svc.cluster.local

@@ -38,3 +38,24 @@ spec:
     protocol: TCP
     port: 5380
     targetPort: 5380
+
+# Temporary, to allow loading the dns zones
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Values.app.name }}-ui2
+#   namespace: {{ .Release.Namespace }}
+#   annotations:
+#     metallb.universe.tf/address-pool: default-pool
+# spec:
+#   selector:
+#     app: {{ .Values.app.name }}
+#   type: LoadBalancer
+#   loadBalancerIP: 10.10.0.12
+#   externalTrafficPolicy: Local
+#   ports:
+#   - name: http
+#     protocol: TCP
+#     port: 5380
+#     targetPort: 5380

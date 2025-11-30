@@ -93,12 +93,20 @@
       telemetry:
         enabled: false
       ```
-    - `k0s stop & k0s start`
+    - `sudo k0s stop & k0s start`
   - Generate Kubeconfig
-    - `k0s kubeconfig admin`
+    - `sudo k0s kubeconfig admin`
     - Change the ip address in this file to pi1.local (in case ip changes)
 
 - Deployments
   - Push technitium, etc
     - `install.sh`
-  - Restore technitium settings
+      - Note: on this error, try again. Sometimes the webhook takes a few seconds to install.
+        - ```bash
+        * Internal error occurred: failed calling webhook "ipaddresspoolvalidationwebhook.metallb.io": failed to call webhook: Post "https://metallb-webhook-service.metallb-system.svc:443/validate-metallb-io-v1beta1-ipaddresspool?timeout=10s": dial tcp 10.101.89.12:443: i/o timeout
+        ```
+  - Setup users
+    - technitium
+    - frigate
+  - Restore settings
+    - technitium
