@@ -13,8 +13,8 @@ data:
         - http://{{ .Values.config.cams.doorbell.ip }}/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=stream&password={{ .Values.config.cams.doorbell.pw }}
       garage_main:
         - nest:?client_id={{ .Values.config.cams.garage.oauth_client_id }}&client_secret={{ .Values.config.cams.garage.oauth_client_secret }}&device_id={{ .Values.config.cams.garage.nest_device_id }}&project_id={{ .Values.config.cams.garage.nest_project_id }}&refresh_token={{ .Values.config.cams.garage.oauth_refresh_token }}
-      garage_sub:
-        - "ffmpeg:garage_main#video=h264#width=960#height=540#raw=-fpsmax 5"
+      # garage_sub:
+      #   - "ffmpeg:garage_main#video=h264#width=960#height=540#raw=-fpsmax 5"
       # doorbell_rtsp_main:
       #   - rtsp://stream:{{ .Values.config.cams.doorbell.pw }}@{{ .Values.config.cams.doorbell.ip }}/Preview_01_main
       # doorbell_rtsp_sub:
