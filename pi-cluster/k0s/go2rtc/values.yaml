@@ -11,6 +11,9 @@ deployment:
   image:
     repository: alexxit/go2rtc
     tag: "latest"
+  resources:
+    limits:
+      cpu: 500m
 
 config:
   cams:

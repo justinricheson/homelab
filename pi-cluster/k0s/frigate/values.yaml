@@ -69,3 +69,6 @@ persistence:
   media:
     enabled: true
     existingClaim: frigate-media
+resources:
+  limits:
+    cpu: 2
