@@ -4,12 +4,11 @@ config: |
     #reset_admin_password: true
   mqtt:
     enabled: false
-    host: mosquitto.mosquitto.svc.cluster.local
-    port: 1883
   detectors:
     cpu1:
       type: cpu
   motion:
+    enabled: true
     threshold: 50
     contour_area: 50
   record:
@@ -24,6 +23,10 @@ config: |
     enabled: true
     retain:
       default: 30
+  notifications:
+    enabled: true
+    email: "justinricheson@icloud.com"
+    cooldown: 60
   cameras:
     doorbell:
       enabled: true
@@ -39,10 +42,25 @@ config: |
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main?mp4
             roles:
               - record
-  notifications:
-    enabled: true
-    email: "justinricheson@icloud.com"
-    cooldown: 60
+    garage:
+      enabled: true
+      detect:
+        width: 960
+        height: 540
+        fps: 5
+      notifications:
+        enabled: false
+      motion:
+        mask:
+          0,0.887,0.06,0.67,0.306,0.606,0.511,0.532,0.689,0.45,0.82,0.421,0.917,0.481,0.974,0.536,1,0.604,1,1,0,1
+      ffmpeg:
+        inputs:
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_sub?mp4
+            roles:
+              - detect
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main?mp4
+            roles:
+              - record
 
 persistence:
   config:
