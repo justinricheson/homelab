@@ -27,26 +27,26 @@ config: |
     enabled: true
     email: "justinricheson@icloud.com"
     cooldown: 60
+  logger:
+    default: info
+    logs:
+      frigate.comms.webpush: debug
   cameras:
     doorbell:
       enabled: true
       detect:
-        width: 640
-        height: 480
         fps: 5
       ffmpeg:
         inputs:
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_sub?mp4
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_sub
             roles:
               - detect
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main?mp4
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main
             roles:
               - record
     garage:
       enabled: true
       detect:
-        width: 960
-        height: 540
         fps: 5
       notifications:
         enabled: false
@@ -55,7 +55,7 @@ config: |
           0,0.726,0,0,1,0,1,0.501,0.973,0.503,0.897,0.446,0.786,0.4,0.618,0.351,0.533,0.394,0.296,0.452,0.147,0.478
       ffmpeg:
         inputs:
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main?mp4
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main
             roles:
               - record
               - detect
