@@ -42,6 +42,9 @@
     - `sudo systemctl enable systemd-resolved`
 	- `sudo systemctl start systemd-resolved`
 	- `resolvectl status` (to verify)
+  - Setup curl
+    - Sigh.. Debian
+    - `sudo apt install -y curl`
 
 - Config
   - Enable ethernet
@@ -72,4 +75,4 @@
       ```
 
 - K0s
-  - TODO
+  - NA
