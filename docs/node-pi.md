@@ -1,0 +1,87 @@
+# Base Node Setup for Raspberry Pi 5
+
+- OS
+  - [Flash sdcard](https://www.raspberrypi.com/software)
+    - Hostname: pi<num>
+    - Username / password
+    - Enable ssh
+  - Boot and clone sdcard to nvme
+    - [rpi-clone](https://github.com/geerlingguy/rpi-clone)
+    - Install:
+      - `git clone https://github.com/geerlingguy/rpi-clone.git`
+      - `cd rpi-clone && sudo cp rpi-clone rpi-clone-setup /usr/local/sbin`
+    - Clone: `sudo rpi-clone /dev/nvme0n1`
+      - Leave the optional filesystem label empty
+    - `sudo shutdown -h now`
+    - Remove sdcard, and reboot
+    - Cleanup rpi-clone:
+      - `sudo rm /usr/local/sbin/rpi-clone`
+      - `sudo rm /usr/local/sbin/rpi-clone-setup`
+
+- Packages
+  - Yum update
+    - `sudo apt update`
+    - `sudo apt full-upgrade -y`
+    - `sudo apt autoremove -y`
+    - `sudo reboot`
+  - Setup iscsi (for longhorn)
+    - `sudo apt install -y open-iscsi`
+    - `sudo reboot`
+    - `sudo systemctl enable iscsid`
+    - `sudo systemctl start iscsid`
+
+- Config
+  - Set static dns
+    - Without this, the node can’t resolve containers before dns is setup.
+      - Since dns runs on k0s, a reboot creates a cycle, dns -> k0s -> dns.
+    - `nmcli device status`
+    - `nmcli connection show`
+    - `sudo nmcli connection modify "Wired connection 1" ipv4.dns 1.1.1.1`
+    - `sudo nmcli connection modify "Wired connection 1" ipv4.ignore-auto-dns yes`
+    - `sudo reboot`
+  - Update raspi-config
+    - `sudo raspi-config`
+    - `update`
+    - `sudo reboot`
+  - Set wifi country
+    - `sudo raspi-config`
+    - `Localization Options > WLAN Country`
+    - `sudo reboot`
+
+- K0s
+  - Enable cgroups
+    - `sudo nano /boot/firmware/cmdline.txt`
+    - Add this to the end of the line: ` cgroup_memory=1 cgroup_enable=memory`
+  - [Install k0s](https://docs.k0sproject.io/stable/install)
+    - Make sure all nodes are running the same version
+      - `sudo k0s version`
+      - If not, see the [upgrade guide](https://docs.k0sproject.io/stable/upgrade)
+    - `curl --proto '=https' --tlsv1.2 -sSf https://get.k0s.sh | sudo sh`
+    - On pi1:
+      - `sudo k0s install controller --enable-worker --no-taints`
+      - `sudo k0s start`
+    - On others:
+      - `ssh pi1.local`
+      - `sudo k0s token create --role=worker --expiry=100h`
+      - `ssh pi2.local`
+      - `sudo mkdir /etc/k0s`
+      - `sudo touch /etc/k0s/token-file` Copy the token here
+      - `sudo chown root:root /etc/k0s/token-file`
+      - `sudo chmod 644 /etc/k0s/token-file`
+      - `sudo k0s install worker --token-file /etc/k0s/token-file`
+      - `sudo k0s start`
+    - `sudo k0s status`
+  - Disable k0s telemetry, and setup sans
+    - `sudo nano /etc/k0s/k0s.yaml`
+    - ```yaml
+      spec:
+      api:
+        sans:
+        - pi1.local # Only include on pi1
+      telemetry:
+        enabled: false
+      ```
+    - `sudo k0s stop & k0s start`
+  - Generate Kubeconfig
+    - `sudo k0s kubeconfig admin`
+    - Change the ip address in this file to pi1.local (in case ip changes)
