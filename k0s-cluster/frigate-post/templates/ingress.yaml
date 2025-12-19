@@ -6,7 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     traefik.ingress.kubernetes.io/service.serversscheme: https
-    # traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Values.app.name }}-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:

@@ -13,6 +13,8 @@ VERSION_GO2RTC=1.9.10         # https://github.com/AlexxIT/go2rtc - https://hub.
 VERSION_FRIGATE=7.8.0         # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
 VERSION_FRIGATE_IMG=0.16.1    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
 
+./scripts/tag-nodes.sh
+
 helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts

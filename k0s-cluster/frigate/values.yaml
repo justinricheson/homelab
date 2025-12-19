@@ -60,6 +60,14 @@ config: |
               - record
               - detect
 
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "nvr"
+    effect: "NoSchedule"
+nodeSelector:
+  role: nvr
+
 persistence:
   config:
     enabled: true
@@ -67,6 +75,3 @@ persistence:
   media:
     enabled: true
     existingClaim: frigate-media
-resources:
-  limits:
-    cpu: 2

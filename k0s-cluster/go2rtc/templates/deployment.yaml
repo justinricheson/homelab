@@ -29,10 +29,14 @@ spec:
           - name: config
             mountPath: /config
             readOnly: true
-        resources:
-          limits:
-            cpu: {{ .Values.deployment.resources.limits.cpu }}
       volumes:
         - name: config
           configMap:
             name: {{ .Values.app.name }}
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "nvr"
+          effect: "NoSchedule"
+      nodeSelector:
+        role: nvr
