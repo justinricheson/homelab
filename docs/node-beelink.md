@@ -40,8 +40,8 @@
     - `sudo apt install -y systemd-resolved`
     - `sudo reboot`
     - `sudo systemctl enable systemd-resolved`
-	- `sudo systemctl start systemd-resolved`
-	- `resolvectl status` (to verify)
+	  - `sudo systemctl start systemd-resolved`
+	  - `resolvectl status` (to verify)
   - Setup curl
     - Sigh.. Debian
     - `sudo apt install -y curl`

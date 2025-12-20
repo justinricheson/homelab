@@ -5,8 +5,18 @@ config: |
   mqtt:
     enabled: false
   detectors:
-    cpu1:
-      type: cpu
+    # cpu1:
+    #   type: cpu
+    ov1:
+      type: openvino
+      device: GPU
+  model:
+    width: 300
+    height: 300
+    input_tensor: nhwc
+    input_pixel_format: bgr
+    path: /openvino-model/ssdlite_mobilenet_v2.xml
+    labelmap_path: /openvino-model/coco_91cl_bkgr.txt
   motion:
     enabled: true
     threshold: 50
@@ -67,6 +77,20 @@ tolerations:
     effect: "NoSchedule"
 nodeSelector:
   role: nvr
+
+# Mount the Intel GPU device
+extraVolumes:
+  - name: dev-dri
+    hostPath:
+      path: /dev/dri
+      type: Directory
+
+extraVolumeMounts:
+  - name: dev-dri
+    mountPath: /dev/dri
+
+securityContext:
+  privileged: true
 
 persistence:
   config:
