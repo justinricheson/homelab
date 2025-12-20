@@ -49,7 +49,7 @@
 - Config
   - Enable ethernet
     - `sudo nano /etc/systemd/network/10-eth0.network`
-      - ```
+      ```
         [Match]
         Name=enp170s0
 
@@ -70,7 +70,7 @@
     - Without this, the node can’t resolve containers before dns is setup.
       - Since dns runs on k0s, a reboot creates a cycle, dns -> k0s -> dns.
     - `sudo nano /etc/systemd/resolved.conf`
-      - ```
+      ```
         FallbackDNS=1.1.1.1
       ```
 

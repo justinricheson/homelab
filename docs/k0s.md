@@ -16,7 +16,7 @@
 
 - Config
   - `sudo nano /etc/k0s/k0s.yaml`
-  - ```yaml
+    ```yaml
     spec:
       api:
         sans:
@@ -46,7 +46,7 @@
 
 - Config
   - `sudo nano /etc/k0s/k0s.yaml`
-  - ```yaml
+    ```yaml
     spec:
       telemetry:
         enabled: false
