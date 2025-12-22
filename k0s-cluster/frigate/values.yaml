@@ -54,21 +54,34 @@ config: |
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main
             roles:
               - record
+    garage_old:
+      enabled: true
+      detect:
+        fps: 5
+      notifications:
+        enabled: false
+      ffmpeg:
+        inputs:
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_old_main
+            roles:
+              - detect
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_old_main
+            roles:
+              - record
     garage:
       enabled: true
       detect:
         fps: 5
       notifications:
         enabled: false
-      motion:
-        mask:
-          0,0.726,0,0,1,0,1,0.501,0.973,0.503,0.897,0.446,0.786,0.4,0.618,0.351,0.533,0.394,0.296,0.452,0.147,0.478
       ffmpeg:
         inputs:
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main
             roles:
-              - record
               - detect
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_sub
+            roles:
+              - record
 
 tolerations:
   - key: "dedicated"
