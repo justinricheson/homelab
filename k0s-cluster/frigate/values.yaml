@@ -17,6 +17,9 @@ config: |
     input_pixel_format: bgr
     path: /openvino-model/ssdlite_mobilenet_v2.xml
     labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+  detect:
+    enabled: true
+    fps: 5
   motion:
     enabled: true
     threshold: 50
@@ -44,8 +47,6 @@ config: |
   cameras:
     doorbell:
       enabled: true
-      detect:
-        fps: 5
       ffmpeg:
         inputs:
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_sub
@@ -54,24 +55,8 @@ config: |
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_main
             roles:
               - record
-    garage_old:
-      enabled: true
-      detect:
-        fps: 5
-      notifications:
-        enabled: false
-      ffmpeg:
-        inputs:
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_old_main
-            roles:
-              - detect
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_old_main
-            roles:
-              - record
     garage:
       enabled: true
-      detect:
-        fps: 5
       notifications:
         enabled: false
       ffmpeg:

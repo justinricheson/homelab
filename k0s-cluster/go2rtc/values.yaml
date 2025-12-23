@@ -20,12 +20,6 @@ config:
     garage:
       ip: 10.30.0.10
       pw: "put the result in secrets.yaml"
-    garage_old:
-      nest_project_id: 29913924-6586-4af2-a0d6-539304ab029e
-      nest_device_id: AVPHwEuQY4mmynlnnp8mbLVm97HKbFm38RKtc6GkLcalBVWxijOPhnTJPlBc8WofSRKSa127u2nyFY_hejuvQMHbAENuVA
-      oauth_client_id: 10590837870-cu6eu322nedqo16hrakri08coflr626t.apps.googleusercontent.com
-      oauth_client_secret: "put in secrets.yaml"
-      oauth_refresh_token: "put in secrets.yaml"
 
 secret:
   # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"

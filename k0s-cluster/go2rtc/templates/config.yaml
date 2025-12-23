@@ -11,12 +11,6 @@ data:
         - http://{{ .Values.config.cams.doorbell.ip }}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=stream&password={{ .Values.config.cams.doorbell.pw }}
       doorbell_sub:
         - http://{{ .Values.config.cams.doorbell.ip }}/flv?port=1935&app=bcs&stream=channel0_ext.bcs&user=stream&password={{ .Values.config.cams.doorbell.pw }}
-      # doorbell_rtsp_main:
-      #   - rtsp://stream:{{ .Values.config.cams.doorbell.pw }}@{{ .Values.config.cams.doorbell.ip }}/Preview_01_main
-      # doorbell_rtsp_sub:
-      #   - rtsp://stream:{{ .Values.config.cams.doorbell.pw }}@{{ .Values.config.cams.doorbell.ip }}/Preview_01_sub
-      garage_old_main:
-        - nest:?client_id={{ .Values.config.cams.garage_old.oauth_client_id }}&client_secret={{ .Values.config.cams.garage_old.oauth_client_secret }}&device_id={{ .Values.config.cams.garage_old.nest_device_id }}&project_id={{ .Values.config.cams.garage_old.nest_project_id }}&refresh_token={{ .Values.config.cams.garage_old.oauth_refresh_token }}
       garage_main:
         - rtsp://stream:{{ .Values.config.cams.garage.pw }}@{{ .Values.config.cams.garage.ip }}:554/cam/realmonitor?channel=1&subtype=0
       garage_sub:
