@@ -61,10 +61,10 @@ config: |
         enabled: false
       ffmpeg:
         inputs:
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_sub
             roles:
               - detect
-          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_sub
+          - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_main
             roles:
               - record
 
