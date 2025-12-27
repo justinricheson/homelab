@@ -15,10 +15,10 @@ deployment:
 config:
   cams:
     doorbell:
-      ip: 10.20.0.10
+      ip: 10.10.0.100
       pw: "put the result in secrets.yaml"
     garage:
-      ip: 10.30.0.10
+      ip: 10.20.0.100
       pw: "put the result in secrets.yaml"
 
 secret:
