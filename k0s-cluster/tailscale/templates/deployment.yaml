@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.app.name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+    spec:
+      hostNetwork: true
+      containers:
+      - name: {{ .Values.app.name }}
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        securityContext:
+          privileged: true
+        env:
+        - name: TS_AUTHKEY
+          value: '{{ .Values.secret.authKey }}'
+        - name: TS_ROUTES
+          value: '{{ .Values.deployment.advertiseRoutes | join ","}}'
+        - name: TS_EXTRA_ARGS
+          value: '--advertise-tags=tag:home-subnet-router'
+        - name: TS_STATE_DIR
+          value: '/tailscale'
+        - name: TS_USERSPACE
+          value: 'false'
+        command:
+        - sh
+        - -c
+        - |
+          tailscaled --statedir=$TS_STATE_DIR &
+          TSD_PID=$!
+          sleep 2
+          tailscale up \
+            --authkey=$TS_AUTHKEY \
+            --advertise-routes=$TS_ROUTES \
+            --advertise-tags=tag:home-subnet-router
+          wait $TSD_PID
+        volumeMounts:
+        - name: tailscale-state
+          mountPath: /tailscale
+        - name: dev-net-tun
+          mountPath: /dev/net/tun
+      volumes:
+      - name: tailscale-state
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.name }}-state
+      - name: dev-net-tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice

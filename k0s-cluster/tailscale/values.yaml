@@ -1,0 +1,16 @@
+app:
+  name: tailscale
+
+deployment:
+  image:
+    repository: tailscale/tailscale
+    tag: "stable"
+  advertiseRoutes:
+    - "10.0.0.0/8"
+
+volumes:
+  state:
+    size: 100Mi
+
+secret:
+  authKey: "put the result in secrets.yaml"
