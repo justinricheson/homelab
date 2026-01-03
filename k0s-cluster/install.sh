@@ -4,8 +4,8 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
-VERSION_METALLB_HELM=0.15.2   # https://metallb.io                - helm search repo metallb/metallb --versions
-VERSION_CERT_MGR_HELM=v1.18.2 # https://cert-manager.io           - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
+VERSION_METALLB_HELM=0.15.3   # https://metallb.io                - helm search repo metallb/metallb --versions
+VERSION_CERT_MGR_HELM=v1.19.2 # https://cert-manager.io           - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
 VERSION_TRAEFIK_HELM=37.0.0   # https://traefik.io                - helm search repo traefik/traefik --versions
 VERSION_LONGHORN_HELM=1.9.1   # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM_IMG=13.6.0 # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
