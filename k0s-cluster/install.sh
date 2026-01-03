@@ -8,7 +8,7 @@ VERSION_METALLB_HELM=0.15.3   # https://metallb.io                - helm search 
 VERSION_CERT_MGR_HELM=v1.19.2 # https://cert-manager.io           - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
 VERSION_TRAEFIK_HELM=38.0.1   # https://traefik.io                - helm search repo traefik/traefik --versions
 VERSION_LONGHORN_HELM=1.10.1  # https://longhorn.io               - helm search repo longhorn --versions
-VERSION_TECHNITIUM_IMG=13.6.0 # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
+VERSION_TECHNITIUM_IMG=14.3.0 # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC_IMG=1.9.10     # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
 VERSION_FRIGATE_HELM=7.8.0    # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
 VERSION_FRIGATE_IMG=0.16.1    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases

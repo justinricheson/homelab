@@ -82,8 +82,10 @@
       - Since dns runs on k0s, a reboot creates a cycle, dns -> k0s -> dns.
     - `sudo nano /etc/systemd/resolved.conf`
       ```
+        DNS=1.1.1.1
         FallbackDNS=1.1.1.1
       ```
+      - Note: FallbackDNS only takes effect if DHCP doesn't provide anything. It's not a true failover.
 
 - K0s
   - NA

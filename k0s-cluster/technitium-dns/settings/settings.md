@@ -1,7 +1,7 @@
 # How to backup
 
 - Navivate to Settings > General > Backup Settings
--  Select: Dns Settings, Dns Zone Files
+-  Select: Dns Config, Dns Zone Files
 
 # How to restore
 
