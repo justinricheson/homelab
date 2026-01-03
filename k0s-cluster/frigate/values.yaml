@@ -73,11 +73,6 @@ config: |
             roles:
               - record
 
-tolerations:
-  - key: "dedicated"
-    operator: "Equal"
-    value: "nvr"
-    effect: "NoSchedule"
 nodeSelector:
   role: nvr
 

@@ -33,10 +33,5 @@ spec:
         - name: config
           configMap:
             name: {{ .Values.app.name }}
-      tolerations:
-        - key: "dedicated"
-          operator: "Equal"
-          value: "nvr"
-          effect: "NoSchedule"
       nodeSelector:
         role: nvr
