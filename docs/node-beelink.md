@@ -1,5 +1,10 @@
 # Base Node Setup for Beelink EQi12
 
+- BIOS
+  - Configure system to reboot on power failure
+    - Chipset > PCH-IO Configuration
+    - State after G3: S0 State
+
 - OS
   - Flash usb drive with image
     - [Debian base image](https://www.debian.org/distrib/netinst)
@@ -47,6 +52,12 @@
     - `sudo apt install -y curl`
 
 - Config
+  - Verbose boot
+    - This can help with boot issues, it just disables quiet boot mode
+    - `sudo nano /etc/default/grub`
+    - Add `GRUB_CMDLINE_LINUX_DEFAULT=""`
+    - `sudo update-grub`
+    - `sudo reboot`
   - Enable ethernet
     - `sudo nano /etc/systemd/network/10-eth0.network`
       ```
