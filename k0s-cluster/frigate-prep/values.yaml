@@ -5,4 +5,4 @@ volumes:
   config:
     size: 2Gi
   media:
-    size: 100Gi
+    size: 200Gi
