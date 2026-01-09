@@ -45,7 +45,8 @@ spec:
           tailscale up \
             --authkey=$TS_AUTHKEY \
             --advertise-routes=$TS_ROUTES \
-            --advertise-tags=tag:home-subnet-router
+            --advertise-tags=tag:home-subnet-router \
+            --snat-subnet-routes=true
           wait $TSD_PID
         volumeMounts:
         - name: tailscale-state

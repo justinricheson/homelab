@@ -26,6 +26,9 @@ config: |
     contour_area: 50
   record:
     enabled: true
+    retain:
+      days: 1
+      mode: all
     alerts:
       retain:
         days: 30
@@ -34,6 +37,8 @@ config: |
     detections:
       retain:
         days: 30
+      pre_capture: 5
+      post_capture: 30
   snapshots:
     enabled: true
     retain:
