@@ -27,7 +27,6 @@ config: |
   objects:
     track:
       - person
-      - car
   record:
     enabled: true
     retain:
@@ -70,6 +69,10 @@ config: |
       enabled: true
       notifications:
         enabled: true
+      objects:
+        track:
+          - person
+          - car
       zones:
         front-yard:
           coordinates: 
