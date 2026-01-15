@@ -89,6 +89,10 @@ config: |
           required_zones:
             - front-yard
             - driveway-entrance
+      snapshots:
+        required_zones:
+          - front-yard
+          - driveway-entrance      
       ffmpeg:
         inputs:
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/garage_sub
