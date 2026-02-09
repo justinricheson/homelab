@@ -105,16 +105,24 @@ config: |
 nodeSelector:
   role: nvr
 
-# Mount the Intel GPU device
 extraVolumes:
+  # Mount the Intel GPU device
   - name: dev-dri
     hostPath:
       path: /dev/dri
       type: Directory
+  # Patch webpush to stop duplicate notifications
+  - name: webpush-patch
+    configMap:
+      name: frigate-webpush-patch
 
 extraVolumeMounts:
   - name: dev-dri
     mountPath: /dev/dri
+  - name: webpush-patch
+    mountPath: /opt/frigate/frigate/comms/webpush.py
+    subPath: webpush.py
+    readOnly: true
 
 securityContext:
   privileged: true

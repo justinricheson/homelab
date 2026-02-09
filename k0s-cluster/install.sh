@@ -11,7 +11,7 @@ VERSION_LONGHORN_HELM=1.10.1  # https://longhorn.io               - helm search 
 VERSION_TECHNITIUM_IMG=14.3.0 # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
 VERSION_GO2RTC_IMG=1.9.13     # https://github.com/AlexxIT/go2rtc - https://hub.docker.com/r/alexxit/go2rtc/tags
 VERSION_FRIGATE_HELM=7.8.0    # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
-VERSION_FRIGATE_IMG=0.16.3    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
+VERSION_FRIGATE_IMG=0.16.4    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
 VERSION_TAILSCALE_IMG=v1.92.4 # https://tailscale.com             - https://hub.docker.com/r/tailscale/tailscale/tags
 
 ./scripts/tag-nodes.sh

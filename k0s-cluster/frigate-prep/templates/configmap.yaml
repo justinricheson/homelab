@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.app.name }}-webpush-patch
+  namespace: {{ .Release.Namespace }}
+data:
+  webpush.py: |
+{{ .Files.Get "files/webpush.py" | indent 4 }}
