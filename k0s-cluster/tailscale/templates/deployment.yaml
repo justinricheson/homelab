@@ -41,12 +41,20 @@ spec:
         - |
           tailscaled --statedir=$TS_STATE_DIR &
           TSD_PID=$!
-          sleep 2
-          tailscale up \
-            --authkey=$TS_AUTHKEY \
-            --advertise-routes=$TS_ROUTES \
-            --advertise-tags=tag:home-subnet-router \
-            --snat-subnet-routes=true
+          until tailscale status > /dev/null 2>&1; do sleep 1; done
+
+          if tailscale status --json | grep -q '"BackendState":"NeedsLogin"'; then
+            tailscale up \
+              --authkey=$TS_AUTHKEY \
+              --advertise-routes=$TS_ROUTES \
+              --advertise-tags=tag:home-subnet-router \
+              --snat-subnet-routes=true
+          else
+            tailscale up \
+              --advertise-routes=$TS_ROUTES \
+              --advertise-tags=tag:home-subnet-router \
+              --snat-subnet-routes=true
+          fi
           wait $TSD_PID
         volumeMounts:
         - name: tailscale-state
