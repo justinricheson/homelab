@@ -2,6 +2,7 @@ config: |
   version: 0.17-0
   auth:
     enabled: true
+    session_length: 604800
     #reset_admin_password: true
   mqtt:
     enabled: false
