@@ -1,0 +1,11 @@
+app:
+  name: technitium-dns-post
+
+job:
+  image:
+    repository: ashtonian/technitium-configurator
+    tag: "v2.0.0"
+
+dns:
+  url: http://technitium-dns-ui.technitium-dns.svc.cluster.local:5380
+  username: admin

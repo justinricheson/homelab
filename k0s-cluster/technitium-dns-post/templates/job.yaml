@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      initContainers:
+      - name: change-password
+        image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}
+        args: ["change-password"]
+        env:
+        - name: DNS_API_URL
+          value: {{ .Values.dns.url }}
+        - name: DNS_USERNAME
+          value: {{ .Values.dns.username }}
+        - name: DNS_PASSWORD
+          value: {{ .Values.dns.password }}
+        - name: DNS_NEW_PASSWORD
+          value: {{ .Values.dns.newPassword }}
+      containers:
+      - name: configurator
+        image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}
+        args: ["configure", "/app/config.yaml"]
+        env:
+        - name: DNS_API_URL
+          value: {{ .Values.dns.url }}
+        - name: DNS_USERNAME
+          value: {{ .Values.dns.username }}
+        - name: DNS_PASSWORD
+          value: {{ .Values.dns.newPassword }}
+        volumeMounts:
+        - name: config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.app.name }}-config
+      restartPolicy: OnFailure

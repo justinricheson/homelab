@@ -4,15 +4,16 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
-VERSION_METALLB_HELM=0.15.3   # https://metallb.io                - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_CERT_MGR_HELM=v1.20.2 # https://cert-manager.io           - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TRAEFIK_HELM=38.0.1   # https://traefik.io                - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_LONGHORN_HELM=1.10.1  # https://longhorn.io               - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_TECHNITIUM_IMG=15.2.0 # https://technitium.com/dns        - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_GO2RTC_IMG=1.9.14     # https://github.com/AlexxIT/go2rtc - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_FRIGATE_HELM=7.8.0    # https://frigate.video             - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_FRIGATE_IMG=0.17.1    # https://frigate.video             - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TAILSCALE_IMG=v1.98.4 # https://tailscale.com             - curl -s "https://hub.docker.com/v2/repositories/tailscale/tailscale/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                   - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_CERT_MGR_HELM=v1.20.2        # https://cert-manager.io                              - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_TRAEFIK_HELM=38.0.1          # https://traefik.io                                   - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                  - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                           - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                    - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                                - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                                - curl -s "https://hub.docker.com/v2/repositories/tailscale/tailscale/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 
 ./scripts/tag-nodes.sh
 
@@ -99,6 +100,15 @@ echo -e "=======================================================================
 helm upgrade technitium-dns ./technitium-dns \
   --values ./technitium-dns/values.yaml \
   --set deployment.image.tag=$VERSION_TECHNITIUM_IMG \
+  --namespace technitium-dns \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling technitium-dns-post"
+echo -e "=========================================================================================="
+helm upgrade technitium-dns-post ./technitium-dns-post \
+  --values ./technitium-dns-post/values.yaml \
+  --values ./technitium-dns-post/secrets.yaml \
   --namespace technitium-dns \
   --create-namespace \
   --install

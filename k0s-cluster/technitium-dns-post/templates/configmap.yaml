@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.app.name }}-config
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yaml: |-
+    dnsSettings:
+      dnsServerDomain: "dns.home.justinricheson.com"
+      recursion: AllowOnlyForPrivateNetworks
+      dnssecValidation: true
+      forwarders:
+        - "https://cloudflare-dns.com/dns-query (1.1.1.1)"
+        - "https://cloudflare-dns.com/dns-query (1.0.0.1)"
+      forwarderProtocol: Https
+      concurrentForwarding: true
+      forwarderRetries: 3
+      forwarderTimeout: 2000
+      enableBlocking: true
+      blockingType: NxDomain
+      blockListUrls:
+        - "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+      webServiceReverseProxyAddresses:
+        - "127.0.0.0/8"
+        - "10.0.0.0/8"
+        - "100.64.0.0/10"
+        - "169.254.0.0/16"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "!2000::/3"
+        - "::/0"
+
+    zones:
+      - zone: "home.justinricheson.com"
+        type: "Primary"
+        records:
+          - name: "@"
+            type: "A"
+            ttl: 3600
+            ipAddress: "10.10.0.10"
+          - name: "*"
+            type: "A"
+            ttl: 3600
+            ipAddress: "10.10.0.10"
+
+    apps:
+      - name: "Query Logs (Sqlite)"
+        url: "https://download.technitium.com/dns/apps/QueryLogsSqliteApp.zip"
