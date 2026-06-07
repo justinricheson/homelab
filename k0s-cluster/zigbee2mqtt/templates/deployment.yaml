@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: {{ .Values.app.name }}
@@ -19,16 +21,6 @@ spec:
       nodeSelector:
         role: zigbee
 
-      initContainers:
-      - name: copy-config
-        image: busybox
-        command: ['sh', '-c', 'cp /config-ro/configuration.yaml /app/data/configuration.yaml']
-        volumeMounts:
-        - name: config-ro
-          mountPath: /config-ro
-        - name: data
-          mountPath: /app/data
-
       containers:
       - name: {{ .Values.app.name }}
         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
@@ -40,6 +32,16 @@ spec:
         env:
         - name: TZ
           value: America/Chicago
+        - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
+          value: mqtt://mosquitto.mosquitto.svc.cluster.local:1883
+        - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
+          value: /dev/zigbee
+        - name: ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER
+          value: zstack
+        - name: ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED
+          value: "true"
+        - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
+          value: "false"
 
         volumeMounts:
         - name: zigbee
@@ -59,9 +61,6 @@ spec:
         hostPath:
           path: /run/udev
           type: Directory
-      - name: config-ro
-        configMap:
-          name: {{ .Values.app.name }}-config
       - name: data
         persistentVolumeClaim:
           claimName: {{ .Values.app.name }}-pvc

@@ -128,6 +128,7 @@ echo -e "\n\nInstalling zigbee2mqtt"
 echo -e "=========================================================================================="
 helm upgrade zigbee2mqtt ./zigbee2mqtt \
   --values ./zigbee2mqtt/values.yaml \
+  --values ./longhorn-post/secrets.yaml \
   --set deployment.image.tag=$VERSION_ZIGBEE2MQTT_IMG \
   --namespace zigbee2mqtt \
   --create-namespace \

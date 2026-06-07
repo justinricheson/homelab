@@ -1,6 +1,9 @@
 app:
   name: zigbee2mqtt
 
+cert:
+  dnsName: "*.home.justinricheson.com"
+
 ingress:
   dnsName: zigbee.home.justinricheson.com
 
@@ -14,3 +17,7 @@ deployment:
 
 volumes:
   size: 1Gi
+
+secret:
+  # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
+  hashedUsers: "put the result in secrets.yaml"
