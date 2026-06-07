@@ -5,7 +5,7 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 
 VERSION_METALLB_HELM=0.15.3   # https://metallb.io                - helm search repo metallb/metallb --versions
-VERSION_CERT_MGR_HELM=v1.19.2 # https://cert-manager.io           - https://quay.io/repository/jetstack/charts/cert-manager?tab=tags
+VERSION_CERT_MGR_HELM=v1.20.2 # https://cert-manager.io           - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TRAEFIK_HELM=38.0.1   # https://traefik.io                - helm search repo traefik/traefik --versions
 VERSION_LONGHORN_HELM=1.10.1  # https://longhorn.io               - helm search repo longhorn --versions
 VERSION_TECHNITIUM_IMG=14.3.0 # https://technitium.com/dns        - https://hub.docker.com/r/technitium/dns-server/tags
