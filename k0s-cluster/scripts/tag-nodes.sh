@@ -5,3 +5,4 @@
 set -euo pipefail
 
 kubectl label nodes bl1 role=nvr
+kubectl label nodes pi2 role=zigbee

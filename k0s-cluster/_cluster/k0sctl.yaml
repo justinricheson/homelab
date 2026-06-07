@@ -1,0 +1,49 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: k0s-cluster
+  user: admin
+spec:
+  k0s:
+    version: v1.35.4+k0s.0
+  hosts:
+  - ssh:
+      address: 10.10.145.8
+      user: k0s
+      port: 22
+      keyPath: ~/.ssh/k0s_cluster
+    role: controller+worker
+    noTaints: true # Don't prevent pods from scheduling here
+  - ssh:
+      address: 10.10.186.239
+      user: k0s
+      port: 22
+      keyPath: ~/.ssh/k0s_cluster
+    role: worker
+  - ssh:
+      address: 10.10.131.69
+      user: k0s
+      port: 22
+      keyPath: ~/.ssh/k0s_cluster
+    role: worker
+  options:
+    wait:
+      enabled: true
+    drain:
+      enabled: true
+      gracePeriod: 2m0s
+      timeout: 5m0s
+      force: true
+      ignoreDaemonSets: true
+      deleteEmptyDirData: true
+      podSelector: ""
+      skipWaitForDeleteTimeout: 0s
+    concurrency:
+      limit: 30
+      workerDisruptionPercent: 10
+      uploads: 5
+    evictTaint:
+      enabled: false
+      taint: k0sctl.k0sproject.io/evict=true
+      effect: NoExecute
+      controllerWorkers: false

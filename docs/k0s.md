@@ -6,7 +6,7 @@
 - [Install k0s](https://docs.k0sproject.io/stable/install)
 - Make sure all nodes are running the same version
   - `sudo k0s version`
-  - If not, see the [upgrade guide](https://docs.k0sproject.io/stable/upgrade)
+  - If not, see the [Maintenance](#Maintenance) section
 
 # Controller
 
@@ -52,3 +52,29 @@
         enabled: false
     ```
   - `sudo k0s stop & sudo k0s start`
+
+# Maintenance
+
+- Create `k0sctl` user and key
+  - Generate a key pair: `ssh-keygen -t ed25519 -f ~/.ssh/k0s_cluster -C "k0s cluster"`
+  - SSH into each node and run:
+    ```bash
+    sudo useradd -m -s /bin/bash k0s && sudo passwd k0s
+    echo "k0s ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/k0s
+    ```
+  - Copy the key to all nodes: `ssh-copy-id -i ~/.ssh/k0s_cluster.pub k0s@<node>.local`
+
+- Install `k0sctl`
+  - `brew install k0sproject/tap/k0sctl`
+
+- Setup `k0sctl`
+  - If the ips have changed you may need to update the config
+  - Ping each node: `ping <node.local`
+  - Collect the IPs and update the config
+    - `address: 10.10.145.8`
+
+- Backup
+  - `k0sctl backup --config ~/<path-to-workspace>/_cluster/k0sctl.yaml`
+
+- Upgrade
+  - `k0sctl apply --config ~/<path-to-workspace>/_cluster/k0sctl.yaml`

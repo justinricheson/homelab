@@ -1,4 +1,5 @@
 **/secrets.yaml
+**/k0s_backup_*.tar.gz
 
 # Mac
 .DS_Store
