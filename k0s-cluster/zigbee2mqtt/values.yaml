@@ -1,0 +1,16 @@
+app:
+  name: zigbee2mqtt
+
+ingress:
+  dnsName: zigbee.home.justinricheson.com
+
+deployment:
+  image:
+    repository: koenkk/zigbee2mqtt
+    tag: latest
+
+  mqtt:
+    server: mqtt://mosquitto.mosquitto.svc.cluster.local:1883
+
+volumes:
+  size: 1Gi

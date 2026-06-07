@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+
+    spec:
+      nodeSelector:
+        role: zigbee
+
+      initContainers:
+      - name: copy-config
+        image: busybox
+        command: ['sh', '-c', 'cp /config-ro/configuration.yaml /app/data/configuration.yaml']
+        volumeMounts:
+        - name: config-ro
+          mountPath: /config-ro
+        - name: data
+          mountPath: /app/data
+
+      containers:
+      - name: {{ .Values.app.name }}
+        image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 8080
+
+        env:
+        - name: TZ
+          value: America/Chicago
+
+        volumeMounts:
+        - name: zigbee
+          mountPath: /dev/zigbee
+        - name: udev
+          mountPath: /run/udev
+          readOnly: true
+        - name: data
+          mountPath: /app/data
+
+      volumes:
+      - name: zigbee
+        hostPath:
+          path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_12b171a97415f011bf02e374b887153e-if00-port0
+          type: CharDevice
+      - name: udev
+        hostPath:
+          path: /run/udev
+          type: Directory
+      - name: config-ro
+        configMap:
+          name: {{ .Values.app.name }}-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.name }}-pvc

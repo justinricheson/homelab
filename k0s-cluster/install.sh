@@ -11,6 +11,7 @@ VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                      
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                           - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto           - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                           - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                    - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                                - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -120,6 +121,15 @@ helm upgrade mosquitto ./mosquitto \
   --values ./mosquitto/values.yaml \
   --set deployment.image.tag=$VERSION_MOSQUITTO_IMG \
   --namespace mosquitto \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling zigbee2mqtt"
+echo -e "=========================================================================================="
+helm upgrade zigbee2mqtt ./zigbee2mqtt \
+  --values ./zigbee2mqtt/values.yaml \
+  --set deployment.image.tag=$VERSION_ZIGBEE2MQTT_IMG \
+  --namespace zigbee2mqtt \
   --create-namespace \
   --install
 
