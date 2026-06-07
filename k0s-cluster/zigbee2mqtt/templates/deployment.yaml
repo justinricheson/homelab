@@ -42,6 +42,8 @@ spec:
           value: "true"
         - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
           value: "false"
+        - name: ZIGBEE2MQTT_CONFIG_AVAILABILITY_ENABLED
+          value: "true"
 
         volumeMounts:
         - name: zigbee

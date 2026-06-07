@@ -4,26 +4,28 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
-VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                   - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_CERT_MGR_HELM=v1.20.2        # https://cert-manager.io                              - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TRAEFIK_HELM=38.0.1          # https://traefik.io                                   - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                  - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                           - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto           - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                           - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                    - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
-VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                                - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                                - curl -s "https://hub.docker.com/v2/repositories/tailscale/tailscale/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                    - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_CERT_MGR_HELM=v1.20.2        # https://cert-manager.io                               - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_TRAEFIK_HELM=38.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                            - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                     - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                 - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                                 - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_HA_HELM=0.3.63               # https://github.com/pajikos/home-assistant-helm-chart  - helm search repo pajikos/home-assistant --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                                 - curl -s "https://hub.docker.com/v2/repositories/tailscale/tailscale/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 
 ./scripts/tag-nodes.sh
 
-helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
+helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
+helm repo update
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
@@ -168,6 +170,23 @@ echo -e "=======================================================================
 helm upgrade frigate-post ./frigate-post \
   --values ./frigate-post/values.yaml \
   --namespace frigate \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling home-assistant-prep"
+echo -e "=========================================================================================="
+helm upgrade home-assistant-prep ./home-assistant-prep \
+  --values ./home-assistant-prep/values.yaml \
+  --namespace home-assistant \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling home-assistant"
+echo -e "=========================================================================================="
+helm upgrade home-assistant pajikos/home-assistant \
+  --version $VERSION_HA_HELM \
+  --values ./home-assistant/values.yaml \
+  --namespace home-assistant \
   --create-namespace \
   --install
 

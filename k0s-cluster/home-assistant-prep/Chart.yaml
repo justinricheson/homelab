@@ -1,0 +1,6 @@
+apiVersion: v2
+name: home-assistant-prep
+description: Helm chart for preparing home-assistant
+
+type: application
+version: 0.1.0

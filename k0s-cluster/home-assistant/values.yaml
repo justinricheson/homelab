@@ -1,0 +1,22 @@
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: ha.home.justinricheson.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: wildcard-tls
+      hosts:
+        - ha.home.justinricheson.com
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+configuration:
+  enabled: true
+  forceInit: true
+  trusted_proxies:
+    - 10.244.0.0/16
