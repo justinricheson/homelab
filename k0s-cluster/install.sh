@@ -10,8 +10,8 @@ VERSION_TRAEFIK_HELM=38.0.1   # https://traefik.io                - helm search 
 VERSION_LONGHORN_HELM=1.10.1  # https://longhorn.io               - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TECHNITIUM_IMG=15.2.0 # https://technitium.com/dns        - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_GO2RTC_IMG=1.9.14     # https://github.com/AlexxIT/go2rtc - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_FRIGATE_HELM=7.8.0    # https://frigate.video             - helm search repo blakeblackshear/frigate --versions
-VERSION_FRIGATE_IMG=0.17.0    # https://frigate.video             - https://github.com/blakeblackshear/frigate/releases
+VERSION_FRIGATE_HELM=7.8.0    # https://frigate.video             - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_FRIGATE_IMG=0.17.1    # https://frigate.video             - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TAILSCALE_IMG=v1.92.4 # https://tailscale.com             - https://hub.docker.com/r/tailscale/tailscale/tags
 
 ./scripts/tag-nodes.sh
