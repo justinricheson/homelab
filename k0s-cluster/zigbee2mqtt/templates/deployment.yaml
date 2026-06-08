@@ -44,6 +44,8 @@ spec:
           value: "false"
         - name: ZIGBEE2MQTT_CONFIG_AVAILABILITY_ENABLED
           value: "true"
+        - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
+          value: "true"
 
         volumeMounts:
         - name: zigbee

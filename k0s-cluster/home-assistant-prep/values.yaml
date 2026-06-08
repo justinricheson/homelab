@@ -3,3 +3,7 @@ app:
 
 cert:
   dnsName: "*.home.justinricheson.com"
+
+volumes:
+  config:
+    size: 1Gi

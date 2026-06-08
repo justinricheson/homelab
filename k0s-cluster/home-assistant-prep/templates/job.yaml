@@ -1,0 +1,40 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.app.name }}-config-init
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: config-init
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          cat > /config/configuration.yaml << 'EOF'
+          # Loads default set of integrations. Do not remove.
+          default_config:
+
+          http:
+            use_x_forwarded_for: true
+            trusted_proxies:
+              - 10.244.0.0/16
+
+          frontend:
+            themes: !include_dir_merge_named themes
+
+          automation: !include automations.yaml
+          script: !include scripts.yaml
+          scene: !include scenes.yaml
+          EOF
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.name }}-pvc

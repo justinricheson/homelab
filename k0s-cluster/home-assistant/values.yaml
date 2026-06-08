@@ -13,10 +13,10 @@ ingress:
 
 persistence:
   enabled: true
-  size: 5Gi
+  existingClaim: home-assistant-pvc
 
 configuration:
   enabled: true
-  forceInit: true
+  forceInit: false
   trusted_proxies:
     - 10.244.0.0/16
