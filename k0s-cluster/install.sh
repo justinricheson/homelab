@@ -6,7 +6,7 @@ export KUBECONFIG=~/.kube/config-pi1
 
 VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                    - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_CERT_MGR_HELM=v1.20.2        # https://cert-manager.io                               - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TRAEFIK_HELM=38.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TRAEFIK_HELM=41.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -80,6 +80,8 @@ helm upgrade traefik traefik/traefik \
   --namespace traefik \
   --create-namespace \
   --install
+# Uncomment to reinstall crds
+#kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
 
 echo -e "\n\nInstalling traefik-post"
 echo -e "=========================================================================================="

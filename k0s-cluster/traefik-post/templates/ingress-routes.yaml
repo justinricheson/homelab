@@ -5,7 +5,6 @@ kind: IngressRoute
 metadata:
   name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
-
 spec:
   entryPoints:
     - websecure
@@ -15,7 +14,6 @@ spec:
       kind: Rule
       services:
         - name: {{ .name }}
-          namespace: {{ $.Release.Namespace }}
           port: {{ .service.port }}
 
   tls:

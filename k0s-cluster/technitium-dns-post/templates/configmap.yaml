@@ -34,15 +34,30 @@ data:
     zones:
       - zone: "home.justinricheson.com"
         type: "Primary"
-        records:
-          - name: "@"
-            type: "A"
-            ttl: 3600
-            ipAddress: "10.10.0.10"
-          - name: "*"
-            type: "A"
-            ttl: 3600
-            ipAddress: "10.10.0.10"
+
+      - zone: "nas-internal.home.justinricheson.com"
+        type: "Primary"
+
+    records:
+      - domain: "home.justinricheson.com"
+        type: "A"
+        ttl: 3600
+        ipAddress: "10.10.0.10"
+
+      - domain: "*.home.justinricheson.com"
+        type: "A"
+        ttl: 3600
+        ipAddress: "10.10.0.10"
+
+      - domain: "nas-internal.home.justinricheson.com"
+        type: "A"
+        ttl: 3600
+        ipAddress: "10.10.0.50"
+
+      - domain: "*.nas-internal.home.justinricheson.com"
+        type: "A"
+        ttl: 3600
+        ipAddress: "10.10.0.50"
 
     apps:
       - name: "Query Logs (Sqlite)"

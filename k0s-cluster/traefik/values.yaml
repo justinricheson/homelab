@@ -2,11 +2,6 @@ ports:
   web:
     port: 9080
     nodePort: 30000
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
 
   websecure:
     port: 9443
@@ -16,14 +11,8 @@ api:
   dashboard: true
   insecure: false
 
-extraObjects:
-  - apiVersion: traefik.io/v1alpha1
-    kind: Middleware
-    metadata:
-      name: dashboard-auth
-    spec:
-      basicAuth:
-        secret: traefik-auth-secret
+ingressClass:
+  enabled: true
 
 ingressRoute:
   dashboard:
@@ -31,13 +20,8 @@ ingressRoute:
     matchRule: Host(`home.justinricheson.com`)
     entryPoints:
       - websecure
-    middlewares:
-      - name: dashboard-auth
     tls:
       secretName: traefik-tls
-
-ingressClass:
-  enabled: true
 
 service:
   type: LoadBalancer
@@ -47,21 +31,25 @@ service:
 
 providers:
   kubernetesIngress:
-     enabled: true
-  kubernetesGateway:
-     enabled: false
-
-logs:
-  general:
-    level: DEBUG
-  access:
     enabled: true
+
+  kubernetesGateway:
+    enabled: false
 
 metrics:
   prometheus:
     enabled: true
 
-# I can't figure out any other way to get https backends working
-# Traefik's service annotations to specify a custom ServerTransport are not working
 additionalArguments:
+  # I can't figure out any other way to get https backends working
+  # Traefik's service annotations to specify a custom ServerTransport are not working
   - "--serversTransport.insecureSkipVerify=true"
+
+  # HTTPS redirect (replaces deprecated ports.web.redirections)
+  - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+  - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+  - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+
+  # Logging (replaces removed logs section)
+  - "--log.level=DEBUG"
+  - "--accesslog=true"

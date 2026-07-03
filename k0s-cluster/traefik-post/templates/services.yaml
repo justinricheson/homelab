@@ -6,18 +6,9 @@ metadata:
   name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
 spec:
+  type: ExternalName
+  externalName: {{ .service.host }}
   ports:
     - port: {{ .service.port }}
       targetPort: {{ .service.port }}
----
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: {{ .name }}
-  namespace: {{ $.Release.Namespace }}
-subsets:
-  - addresses:
-      - ip: {{ .service.host }}
-    ports:
-      - port: {{ .service.port }}
 {{- end }}
