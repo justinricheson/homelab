@@ -21,11 +21,23 @@ spec:
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         ports:
         - containerPort: 1883
+        - containerPort: 8883
         volumeMounts:
         - name: config
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
+        - name: certs
+          mountPath: /mosquitto/certs
+          readOnly: true
+        - name: passwd
+          mountPath: /mosquitto/passwd
       volumes:
       - name: config
         configMap:
           name: {{ .Values.app.name }}-config
+      - name: certs
+        secret:
+          secretName: wildcard-tls
+      - name: passwd
+        secret:
+          secretName: {{ .Values.app.name }}-passwd

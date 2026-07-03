@@ -131,6 +131,7 @@ echo -e "\n\nInstalling mosquitto"
 echo -e "=========================================================================================="
 helm upgrade mosquitto ./mosquitto \
   --values ./mosquitto/values.yaml \
+  --values ./mosquitto/secrets.yaml \
   --set deployment.image.tag=$VERSION_MOSQUITTO_IMG \
   --namespace mosquitto \
   --create-namespace \

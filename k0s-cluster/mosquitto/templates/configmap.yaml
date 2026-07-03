@@ -6,7 +6,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   mosquitto.conf: |
-    listener 1883
-    allow_anonymous true
+    per_listener_settings true
     persistence false
     log_dest stdout
+
+    listener 1883
+    allow_anonymous true
+
+    listener 8883
+    certfile /mosquitto/certs/tls.crt
+    keyfile /mosquitto/certs/tls.key
+    allow_anonymous false
+    password_file /mosquitto/passwd/passwordfile

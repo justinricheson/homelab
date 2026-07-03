@@ -5,3 +5,13 @@ deployment:
   image:
     repository: eclipse-mosquitto
     tag: "latest"
+
+service:
+  ip: 10.10.0.12
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+secret:
+  # Generate with: mosquitto_passwd -c passwordfile iot && cat passwordfile
+  password: "put the result in secrets.yaml"

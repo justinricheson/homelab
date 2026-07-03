@@ -46,6 +46,11 @@ data:
         ttl: 3600
         ipAddress: "10.10.0.10"
 
+      - domain: "mqtt.home.justinricheson.com"
+        type: "A"
+        ttl: 3600
+        ipAddress: "10.10.0.12"
+
     apps:
       - name: "Query Logs (Sqlite)"
         url: "https://download.technitium.com/dns/apps/QueryLogsSqliteApp.zip"
