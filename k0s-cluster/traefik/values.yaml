@@ -45,9 +45,6 @@ additionalArguments:
   # Traefik's service annotations to specify a custom ServerTransport are not working
   - "--serversTransport.insecureSkipVerify=true"
 
-  # For nas and other external services
-  - "--providers.kubernetescrd.allowExternalNameServices=true"
-
   # HTTPS redirect (replaces deprecated ports.web.redirections)
   - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
   - "--entrypoints.web.http.redirections.entrypoint.scheme=https"

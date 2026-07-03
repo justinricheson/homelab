@@ -8,14 +8,12 @@ metadata:
 spec:
   entryPoints:
     - websecure
-
   routes:
     - match: Host(`{{ .ingress.dnsName }}`)
       kind: Rule
       services:
         - name: {{ .name }}
           port: {{ .service.port }}
-
   tls:
     secretName: wildcard-tls
 {{- end }}

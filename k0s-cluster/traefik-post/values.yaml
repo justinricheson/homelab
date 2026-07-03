@@ -7,5 +7,5 @@ uis:
     ingress:
       dnsName: nas.home.justinricheson.com
     service:
-      host: nas-internal.home.justinricheson.com
+      host: 10.10.0.50
       port: 8000
