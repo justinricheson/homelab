@@ -21,7 +21,7 @@ RCLONE_SOURCE="/volume1/backup"
 RCLONE_REMOTE="remote:nas-backup-790055257995-us-east-1-an/backup"
 export RCLONE_CONFIG_REMOTE_TYPE=s3
 export RCLONE_CONFIG_REMOTE_REGION=us-east-1
-export RCLONE_CONFIG_REMOTE_ACCESS_KEY_ID=AKIA3P4XWQ6FQ473ZVMM
+#export RCLONE_CONFIG_REMOTE_ACCESS_KEY_ID=Put in secrets.env
 #export RCLONE_CONFIG_REMOTE_SECRET_ACCESS_KEY=Put in secrets.env
 
 publish() {
