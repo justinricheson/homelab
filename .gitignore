@@ -1,4 +1,7 @@
+**/secrets.env
 **/secrets.yaml
+
+# For k0sctl
 **/k0s_backup_*.tar.gz
 
 # Mac
