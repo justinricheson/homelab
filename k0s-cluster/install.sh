@@ -80,7 +80,7 @@ helm upgrade traefik traefik/traefik \
   --namespace traefik \
   --create-namespace \
   --install
-# Uncomment to reinstall crds
+# Uncomment to reinstall crds. Check https://github.com/traefik/traefik-helm-chart for the current version
 #kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
 
 echo -e "\n\nInstalling traefik-post"
