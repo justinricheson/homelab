@@ -34,7 +34,7 @@ ingressRoute:
     middlewares:
       - name: dashboard-auth
     tls:
-      secretName: wildcard-tls
+      secretName: traefik-tls
 
 ingressClass:
   enabled: true

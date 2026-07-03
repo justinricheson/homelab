@@ -1,0 +1,23 @@
+{{- range .Values.uis }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+
+spec:
+  entryPoints:
+    - websecure
+
+  routes:
+    - match: Host(`{{ .ingress.dnsName }}`)
+      kind: Rule
+      services:
+        - name: {{ .name }}
+          namespace: {{ $.Release.Namespace }}
+          port: {{ .service.port }}
+
+  tls:
+    secretName: wildcard-tls
+{{- end }}

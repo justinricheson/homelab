@@ -1,0 +1,11 @@
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+# Creates ingresses for uis that are not running in the cluster
+uis:
+  - name: nas
+    ingress:
+      dnsName: nas.home.justinricheson.com
+    service:
+      host: 10.10.0.50
+      port: 8000

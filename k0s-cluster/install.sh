@@ -81,6 +81,14 @@ helm upgrade traefik traefik/traefik \
   --create-namespace \
   --install
 
+echo -e "\n\nInstalling traefik-post"
+echo -e "=========================================================================================="
+helm upgrade traefik-post ./traefik-post \
+  --values ./traefik-post/values.yaml \
+  --namespace traefik \
+  --create-namespace \
+  --install
+
 echo -e "\n\nInstalling longhorn"
 echo -e "=========================================================================================="
 helm upgrade longhorn longhorn/longhorn \

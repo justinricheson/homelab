@@ -1,6 +1,6 @@
 apiVersion: v2
 name: technitium-dns-post
-description: Helm chart for technitium-dns post setup
+description: A helm chart for technitium-dns post setup
 type: application
 
 version: 0.1.0
