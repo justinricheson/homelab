@@ -4,7 +4,7 @@ set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 CRON_JOB="0 2 * * * $DIR/rclone.sh run"
 
-if [ "$1" != "run" ]; then
+if [ "$1" == "" ]; then
   ( sudo crontab -l 2>/dev/null | grep -v "$(basename "$0")" ; echo "$CRON_JOB" ) | sudo crontab -
   echo "Installed cron job: $CRON_JOB"
   exit 0
@@ -27,10 +27,16 @@ export RCLONE_CONFIG_REMOTE_REGION=us-east-1
 publish() {
   mosquitto_pub -h "$MQTT_HOST" -p "$MQTT_PORT" --cafile "$CAFILE" \
     -u "$MQTT_USER" -P "$MQTT_PASS" -t "$MQTT_TOPIC" -m "$1" -r
+  echo "$1"
 }
 
 . "$DIR/secrets.env"
+if [ "$1" = "mqtt" ]; then
+  publish '{"status":"success","time":"'"$(date -u +%FT%TZ)"'"}'
+  exit 0
+fi
 
+publish '{"status":"start","time":"'"$(date -u +%FT%TZ)"'"}'
 if rclone sync "$RCLONE_SOURCE" "$RCLONE_REMOTE" --log-level ERROR; then
   publish '{"status":"success","time":"'"$(date -u +%FT%TZ)"'"}'
 else
