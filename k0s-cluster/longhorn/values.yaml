@@ -1,7 +1,7 @@
 defaultSettings:
-  defaultReplicaCount: 1 # Disable replication
+  defaultReplicaCount: 2
   allowCollectingLonghornUsageMetrics: false
-  defaultDataLocality: "best-effort"
+  defaultDataLocality: "disabled"
 
 persistence:
-  defaultClassReplicaCount: 1 # Disable replication
+  defaultClassReplicaCount: 2

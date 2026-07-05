@@ -1,0 +1,7 @@
+apiVersion: v2
+name: kyverno-post
+description: A helm chart for kyverno post setup
+type: application
+
+version: 0.1.0
+appVersion: "latest"

@@ -4,6 +4,7 @@ set -e
 
 export KUBECONFIG=~/.kube/config-pi1
 
+VERSION_KYVERNO_HELM=3.8.1           # https://github.com/kyverno/kyverno                    - helm search repo kyverno/kyverno --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                    - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_CERT_MGR_HELM=v1.20.2        # https://cert-manager.io                               - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TRAEFIK_HELM=41.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
@@ -20,12 +21,30 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 
 ./scripts/tag-nodes.sh
 
+helm repo add kyverno https://kyverno.github.io/kyverno
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 helm repo update
+
+echo -e "\n\nInstalling kyverno"
+echo -e "=========================================================================================="
+helm upgrade kyverno kyverno/kyverno \
+  --version $VERSION_KYVERNO_HELM \
+  --values ./kyverno/values.yaml \
+  --namespace kyverno \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling kyverno-post"
+echo -e "=========================================================================================="
+helm upgrade kyverno-post ./kyverno-post \
+  --values ./kyverno-post/values.yaml \
+  --namespace kyverno \
+  --create-namespace \
+  --install
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
@@ -186,6 +205,7 @@ helm upgrade frigate-post ./frigate-post \
 
 echo -e "\n\nInstalling home-assistant-prep"
 echo -e "=========================================================================================="
+kubectl delete job home-assistant-config-init -n home-assistant
 helm upgrade home-assistant-prep ./home-assistant-prep \
   --values ./home-assistant-prep/values.yaml \
   --namespace home-assistant \
