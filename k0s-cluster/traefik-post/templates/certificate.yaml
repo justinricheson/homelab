@@ -1,3 +1,9 @@
+{{- $sans := dict }}
+{{- range .Values.uis }}
+{{- $parts := splitList "." .ingress.dnsName }}
+{{- $wildcard := printf "*.%s" (join "." (rest $parts)) }}
+{{- $_ := set $sans $wildcard true }}
+{{- end }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -6,9 +12,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   secretName: wildcard-tls
-  commonName: "{{ .Values.cert.dnsName }}"
+  commonName: "{{ (keys $sans) | first }}"
   dnsNames:
-    - "{{ .Values.cert.dnsName }}"
+    {{- range keys $sans }}
+    - "{{ . }}"
+    {{- end }}
   issuerRef:
     name: letsencrypt-wildcard
     kind: ClusterIssuer

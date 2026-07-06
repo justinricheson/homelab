@@ -42,9 +42,9 @@ config: |
       pre_capture: 5
       post_capture: 30
     continuous:
-      days: 1
+      days: 3
     motion:
-      days: 1
+      days: 3
   snapshots:
     enabled: true
     retain:
@@ -60,6 +60,7 @@ config: |
   cameras:
     doorbell:
       enabled: true
+      webui_url: "https://doorbell.cams.home.justinricheson.com"
       ffmpeg:
         inputs:
           - path: rtsp://go2rtc-api.go2rtc.svc.cluster.local:8554/doorbell_sub
@@ -70,6 +71,7 @@ config: |
               - record
     garage:
       enabled: true
+      webui_url: "https://garage.cams.home.justinricheson.com"
       notifications:
         enabled: true
       objects:
