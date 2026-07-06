@@ -118,6 +118,7 @@ helm upgrade longhorn longhorn/longhorn \
   --namespace longhorn-system \
   --create-namespace \
   --install
+./scripts/tag-longhorn.sh
 
 echo -e "\n\nInstalling longhorn-post"
 echo -e "=========================================================================================="

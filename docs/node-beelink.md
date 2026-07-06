@@ -35,6 +35,9 @@
     - `sudo reboot`
     - `sudo systemctl enable iscsid`
     - `sudo systemctl start iscsid`
+  - Setup nfs-common (for longhorn)
+    - `sudo apt install -y nfs-common`
+    - `sudo reboot`
   - Setup avahi-daemon (for mDNS)
     - `sudo apt install -y avahi-daemon avahi-utils`
     - `sudo reboot`

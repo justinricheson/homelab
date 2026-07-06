@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.app.name }}-config
   namespace: {{ .Release.Namespace }}
 spec:
-  storageClassName: longhorn
+  storageClassName: longhorn-nvr
   accessModes:
     - ReadWriteOnce
   resources:
@@ -19,7 +19,7 @@ metadata:
   name: {{ .Values.app.name }}-media
   namespace: {{ .Release.Namespace }}
 spec:
-  storageClassName: longhorn
+  storageClassName: longhorn-nvr
   accessModes:
     - ReadWriteOnce
   resources:
