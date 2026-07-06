@@ -2,30 +2,6 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: schedule-frigate-on-nvr-node
-spec:
-  rules:
-    - name: add-nodeselector
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-              namespaces: ["frigate", "go2rtc"]
-      mutate:
-        patchStrategicMerge:
-          spec:
-            nodeSelector:
-              role: nvr
-            tolerations:
-              - key: "role"
-                operator: "Equal"
-                value: "nvr"
-                effect: "NoSchedule"
-
----
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
   name: keep-others-off-nvr-node
 spec:
   rules:
