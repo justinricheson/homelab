@@ -43,7 +43,7 @@ export RCLONE_CONFIG_REMOTE_REGION=us-east-1
 #export RCLONE_CONFIG_REMOTE_SECRET_ACCESS_KEY=Put in secrets.env
 
 publish '{"status":"start","time":"'"$(date -u +%FT%TZ)"'"}'
-if /opt/bin/rclone sync "$RCLONE_SOURCE" "$RCLONE_REMOTE" --fast-list --log-level ERROR; then
+if /opt/bin/rclone sync "$RCLONE_SOURCE" "$RCLONE_REMOTE" --exclude "#Recycle/**" --fast-list --log-level ERROR; then
   publish '{"status":"success","time":"'"$(date -u +%FT%TZ)"'"}'
 else
   publish '{"status":"failure","time":"'"$(date -u +%FT%TZ)"'"}'
