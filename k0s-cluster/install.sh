@@ -12,6 +12,8 @@ VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                      
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_INFLUXDB_HELM=2.1.2          # https://www.influxdata.com/products/influxdb          - helm search repo influxdata/influxdb2 --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TELEGRAF_HELM=1.8.73         # https://github.com/influxdata/helm-charts             - helm search repo influxdata/telegraf --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                            - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                     - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                 - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
@@ -27,6 +29,7 @@ helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
+helm repo add influxdata https://helm.influxdata.com
 helm repo update
 
 echo -e "\n\nInstalling kyverno"
@@ -154,6 +157,33 @@ helm upgrade mosquitto ./mosquitto \
   --values ./mosquitto/secrets.yaml \
   --set deployment.image.tag=$VERSION_MOSQUITTO_IMG \
   --namespace mosquitto \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling influxdb"
+echo -e "=========================================================================================="
+helm upgrade influxdb influxdata/influxdb2 \
+  --version $VERSION_INFLUXDB_HELM \
+  --values ./influxdb/values.yaml \
+  --namespace influxdb \
+  --create-namespace \
+  --install
+
+echo -e "\n\nInstalling influxdb-post"
+echo -e "=========================================================================================="
+helm upgrade influxdb-post ./influxdb-post \
+  --values ./influxdb-post/values.yaml \
+  --namespace influxdb \
+  --create-namespace \
+  --install
+./influxdb-post/scripts/setup-users.sh
+
+echo -e "\n\nInstalling telegraf"
+echo -e "=========================================================================================="
+helm upgrade telegraf ./telegraf \
+  --version $VERSION_TELEGRAF_HELM \
+  --values ./telegraf/values.yaml \
+  --namespace telegraf \
   --create-namespace \
   --install
 

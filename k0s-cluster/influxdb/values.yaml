@@ -1,0 +1,9 @@
+persistence:
+  enabled: true
+  size: 5Gi
+
+adminUser:
+  organization: "home"
+  bucket: "home"
+  user: "admin"
+  retention_policy: "0s"

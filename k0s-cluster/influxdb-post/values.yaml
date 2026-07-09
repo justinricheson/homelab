@@ -1,0 +1,8 @@
+app:
+  name: influxdb-post
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+ingress:
+  dnsName: influxdb.home.justinricheson.com
