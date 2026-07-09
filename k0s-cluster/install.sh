@@ -21,7 +21,7 @@ VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                    
 VERSION_HA_HELM=0.3.63               # https://github.com/pajikos/home-assistant-helm-chart  - helm search repo pajikos/home-assistant --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                                 - curl -s "https://hub.docker.com/v2/repositories/tailscale/tailscale/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 
-./scripts/tag-nodes.sh
+./_cluster/scripts/tag-nodes.sh
 
 helm repo add kyverno https://kyverno.github.io/kyverno
 helm repo add metallb https://metallb.github.io/metallb
@@ -121,7 +121,7 @@ helm upgrade longhorn longhorn/longhorn \
   --namespace longhorn-system \
   --create-namespace \
   --install
-./scripts/tag-longhorn.sh
+./_cluster/scripts/tag-longhorn.sh
 
 echo -e "\n\nInstalling longhorn-post"
 echo -e "=========================================================================================="

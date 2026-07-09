@@ -1,4 +1,5 @@
 # TODO
+# Do we need a separate deployment? Influx seems to have this built in
 # config:
 #   inputs:
 #     - mqtt_consumer:
