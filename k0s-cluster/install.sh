@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_KYVERNO_HELM=3.8.1           # https://github.com/kyverno/kyverno                    - helm search repo kyverno/kyverno --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                    - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TRAEFIK_HELM=41.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
@@ -23,31 +22,15 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 
 ./_cluster/scripts/tag-nodes.sh
 
-helm repo add kyverno https://kyverno.github.io/kyverno
+helm repo update
 helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 helm repo add influxdata https://helm.influxdata.com
-helm repo update
 
-echo -e "\n\nInstalling kyverno"
-echo -e "=========================================================================================="
-helm upgrade kyverno kyverno/kyverno \
-  --version $VERSION_KYVERNO_HELM \
-  --values ./kyverno/values.yaml \
-  --namespace kyverno \
-  --create-namespace \
-  --install
-
-echo -e "\n\nInstalling kyverno-post"
-echo -e "=========================================================================================="
-helm upgrade kyverno-post ./kyverno-post \
-  --values ./kyverno-post/values.yaml \
-  --namespace kyverno \
-  --create-namespace \
-  --install
+"$DIR/kyverno/install.sh"
 
 echo -e "\n\nInstalling metallb"
 echo -e "=========================================================================================="
