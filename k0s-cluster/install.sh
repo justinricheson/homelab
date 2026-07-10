@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_METALLB_HELM=0.15.3          # https://metallb.io                                    - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TRAEFIK_HELM=41.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -23,7 +22,6 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 ./_cluster/scripts/tag-nodes.sh
 
 helm repo update
-helm repo add metallb https://metallb.github.io/metallb
 helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
@@ -32,22 +30,7 @@ helm repo add influxdata https://helm.influxdata.com
 
 "$DIR/kyverno/install.sh"
 
-echo -e "\n\nInstalling metallb"
-echo -e "=========================================================================================="
-helm upgrade metallb metallb/metallb \
-  --version $VERSION_METALLB_HELM \
-  --values ./metallb/values.yaml \
-  --namespace metallb-system \
-  --create-namespace \
-  --install
-
-echo -e "\n\nInstalling metallb-post"
-echo -e "=========================================================================================="
-helm upgrade metallb-post ./metallb-post \
-  --values ./metallb-post/values.yaml \
-  --namespace metallb-system \
-  --create-namespace \
-  --install
+"$DIR/metallb/install.sh"
 
 "$DIR/cert-manager/install.sh"
 
