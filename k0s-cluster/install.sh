@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                     - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_FRIGATE_HELM=7.8.0           # https://frigate.video                                 - helm search repo blakeblackshear/frigate --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_FRIGATE_IMG=0.17.1           # https://frigate.video                                 - curl -s "https://api.github.com/repos/blakeblackshear/frigate/releases/latest" | jq -r '.tag_name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_HA_HELM=0.3.63               # https://github.com/pajikos/home-assistant-helm-chart  - helm search repo pajikos/home-assistant --versions | grep -v 'alpha\|beta\|rc' | head -5
@@ -37,15 +36,7 @@ helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
 "$DIR/zigbee2mqtt/install.sh"
 
-echo -e "\n\nInstalling go2rtc"
-echo -e "=========================================================================================="
-helm upgrade go2rtc ./go2rtc \
-  --values ./go2rtc/values.yaml \
-  --values ./go2rtc/secrets.yaml \
-  --set deployment.image.tag=$VERSION_GO2RTC_IMG \
-  --namespace go2rtc \
-  --create-namespace \
-  --install
+"$DIR/go2rtc/install.sh"
 
 echo -e "\n\nInstalling frigate-prep"
 echo -e "=========================================================================================="
