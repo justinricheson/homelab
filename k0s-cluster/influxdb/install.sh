@@ -2,7 +2,6 @@
 
 set -e
 
-export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 VERSION_INFLUXDB_HELM=2.1.2 # https://www.influxdata.com/products/influxdb - helm search repo influxdata/influxdb2 --versions | grep -v 'alpha\|beta\|rc' | head -5

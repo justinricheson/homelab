@@ -35,14 +35,7 @@ helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
 "$DIR/influxdb/install.sh"
 
-echo -e "\n\nInstalling telegraf"
-echo -e "=========================================================================================="
-helm upgrade telegraf ./telegraf \
-  --version $VERSION_TELEGRAF_HELM \
-  --values ./telegraf/values.yaml \
-  --namespace telegraf \
-  --create-namespace \
-  --install
+"$DIR/telegraf/install.sh"
 
 echo -e "\n\nInstalling zigbee2mqtt"
 echo -e "=========================================================================================="
