@@ -2,7 +2,6 @@
 
 set -e
 
-KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 VERSION_TRAEFIK_HELM=41.0.1 # https://traefik.io - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5

@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -21,7 +20,6 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 ./_cluster/scripts/tag-nodes.sh
 
 helm repo update
-helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 helm repo add influxdata https://helm.influxdata.com
@@ -34,24 +32,7 @@ helm repo add influxdata https://helm.influxdata.com
 
 "$DIR/traefik/install.sh"
 
-echo -e "\n\nInstalling longhorn"
-echo -e "=========================================================================================="
-helm upgrade longhorn longhorn/longhorn \
-  --version $VERSION_LONGHORN_HELM \
-  --values ./longhorn/values.yaml \
-  --namespace longhorn-system \
-  --create-namespace \
-  --install
-./_cluster/scripts/tag-longhorn.sh
-
-echo -e "\n\nInstalling longhorn-post"
-echo -e "=========================================================================================="
-helm upgrade longhorn-post ./longhorn-post \
-  --values ./longhorn-post/values.yaml \
-  --values ./longhorn-post/secrets.yaml \
-  --namespace longhorn-system \
-  --create-namespace \
-  --install
+"$DIR/longhorn/install.sh"
 
 echo -e "\n\nInstalling technitium-dns"
 echo -e "=========================================================================================="
