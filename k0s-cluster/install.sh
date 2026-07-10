@@ -6,7 +6,6 @@ export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_INFLUXDB_HELM=2.1.2          # https://www.influxdata.com/products/influxdb          - helm search repo influxdata/influxdb2 --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TELEGRAF_HELM=1.8.73         # https://github.com/influxdata/helm-charts             - helm search repo influxdata/telegraf --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                            - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                     - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -20,7 +19,6 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 helm repo update
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
-helm repo add influxdata https://helm.influxdata.com
 
 "$DIR/kyverno/install.sh"
 
@@ -44,23 +42,7 @@ helm upgrade mosquitto ./mosquitto \
   --create-namespace \
   --install
 
-echo -e "\n\nInstalling influxdb"
-echo -e "=========================================================================================="
-helm upgrade influxdb influxdata/influxdb2 \
-  --version $VERSION_INFLUXDB_HELM \
-  --values ./influxdb/values.yaml \
-  --namespace influxdb \
-  --create-namespace \
-  --install
-
-echo -e "\n\nInstalling influxdb-post"
-echo -e "=========================================================================================="
-helm upgrade influxdb-post ./influxdb-post \
-  --values ./influxdb-post/values.yaml \
-  --namespace influxdb \
-  --create-namespace \
-  --install
-./influxdb-post/scripts/setup-users.sh
+"$DIR/influxdb/install.sh"
 
 echo -e "\n\nInstalling telegraf"
 echo -e "=========================================================================================="
