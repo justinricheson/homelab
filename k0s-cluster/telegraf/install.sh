@@ -10,6 +10,7 @@ helm repo add influxdata https://helm.influxdata.com
 
 echo -e "\n\nInstalling telegraf"
 echo -e "=========================================================================================="
+"$DIR/scripts/apply-secrets.sh"
 helm upgrade telegraf influxdata/telegraf \
   --version $VERSION_TELEGRAF_HELM \
   --values $DIR/values.yaml \

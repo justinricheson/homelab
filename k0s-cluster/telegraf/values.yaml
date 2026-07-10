@@ -1,19 +1,24 @@
-# TODO
-# Do we need a separate deployment? Influx seems to have this built in
-# config:
-#   inputs:
-#     - mqtt_consumer:
-#         servers:
-#           - "mosquitto.mosquitto.svc.cluster.local:1883"
-#         topics:
-#           - "nas/rclone/status"
-#         data_format: "json"
-#   outputs:
-#     - influxdb_v2:
-#         urls:
-#           - "http://influxdb.influxdb.svc.cluster.local:8086"
-#         token: "$INFLUX_TOKEN"
-#         organization: "home"
-#         bucket: "nas"
-
-# envFromSecret: "telegraf-secrets"
+config:
+  agent:
+    debug: true
+  inputs:
+    - mqtt_consumer:
+        servers:
+          - "tcp://mosquitto.mosquitto.svc.cluster.local:1883"
+        topics:
+          - "nas/rclone/status"
+        data_format: "json"
+        json_string_fields:
+          - "status"
+          - "time"
+  outputs:
+    - influxdb_v2:
+        urls:
+          - "http://influxdb-influxdb2.influxdb.svc.cluster.local:80"
+        token: "$INFLUX_TOKEN"
+        organization: "home"
+        bucket: "home"
+envFromSecret: "telegraf-secrets"
+metrics:
+  health:
+    enabled: true
