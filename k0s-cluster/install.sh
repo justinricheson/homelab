@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_TRAEFIK_HELM=41.0.1          # https://traefik.io                                    - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_LONGHORN_HELM=1.10.1         # https://longhorn.io                                   - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -22,7 +21,6 @@ VERSION_TAILSCALE_IMG=v1.98.4        # https://tailscale.com                    
 ./_cluster/scripts/tag-nodes.sh
 
 helm repo update
-helm repo add traefik https://traefik.github.io/charts
 helm repo add longhorn https://charts.longhorn.io
 helm repo add blakeblackshear https://blakeblackshear.github.io/blakeshome-charts
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
@@ -34,33 +32,7 @@ helm repo add influxdata https://helm.influxdata.com
 
 "$DIR/cert-manager/install.sh"
 
-echo -e "\n\nInstalling traefik-prep"
-echo -e "=========================================================================================="
-helm upgrade traefik-prep ./traefik-prep \
-  --values ./traefik-prep/values.yaml \
-  --values ./traefik-prep/secrets.yaml \
-  --namespace traefik \
-  --create-namespace \
-  --install
-
-echo -e "\n\nInstalling traefik"
-echo -e "=========================================================================================="
-helm upgrade traefik traefik/traefik \
-  --version $VERSION_TRAEFIK_HELM \
-  --values ./traefik/values.yaml \
-  --namespace traefik \
-  --create-namespace \
-  --install
-# Uncomment to reinstall crds. Check https://github.com/traefik/traefik-helm-chart for the current version
-#kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
-
-echo -e "\n\nInstalling traefik-post"
-echo -e "=========================================================================================="
-helm upgrade traefik-post ./traefik-post \
-  --values ./traefik-post/values.yaml \
-  --namespace traefik \
-  --create-namespace \
-  --install
+"$DIR/traefik/install.sh"
 
 echo -e "\n\nInstalling longhorn"
 echo -e "=========================================================================================="
