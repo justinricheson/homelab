@@ -5,8 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_TECHNITIUM_IMG=15.2.0        # https://technitium.com/dns                            - curl -s "https://hub.docker.com/v2/repositories/technitium/dns-server/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
-VERSION_TECHNITIUM_CONFIG_IMG=v2.0.0 # https://github.com/ashtonian/technitium-configurator  - curl -s "https://api.github.com/repos/ashtonian/technitium-configurator/tags" | jq -r '.[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_INFLUXDB_HELM=2.1.2          # https://www.influxdata.com/products/influxdb          - helm search repo influxdata/influxdb2 --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_TELEGRAF_HELM=1.8.73         # https://github.com/influxdata/helm-charts             - helm search repo influxdata/telegraf --versions | grep -v 'alpha\|beta\|rc' | head -5
@@ -34,23 +32,7 @@ helm repo add influxdata https://helm.influxdata.com
 
 "$DIR/longhorn/install.sh"
 
-echo -e "\n\nInstalling technitium-dns"
-echo -e "=========================================================================================="
-helm upgrade technitium-dns ./technitium-dns \
-  --values ./technitium-dns/values.yaml \
-  --set deployment.image.tag=$VERSION_TECHNITIUM_IMG \
-  --namespace technitium-dns \
-  --create-namespace \
-  --install
-
-echo -e "\n\nInstalling technitium-dns-post"
-echo -e "=========================================================================================="
-helm upgrade technitium-dns-post ./technitium-dns-post \
-  --values ./technitium-dns-post/values.yaml \
-  --values ./technitium-dns-post/secrets.yaml \
-  --namespace technitium-dns \
-  --create-namespace \
-  --install
+"$DIR/technitium-dns/install.sh"
 
 echo -e "\n\nInstalling mosquitto"
 echo -e "=========================================================================================="
