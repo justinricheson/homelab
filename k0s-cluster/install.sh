@@ -5,7 +5,6 @@ set -e
 export KUBECONFIG=~/.kube/config-pi1
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_MOSQUITTO_IMG=2.0.22         # https://hub.docker.com/_/eclipse-mosquitto            - curl -s "https://hub.docker.com/v2/repositories/library/eclipse-mosquitto/tags?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_TELEGRAF_HELM=1.8.73         # https://github.com/influxdata/helm-charts             - helm search repo influxdata/telegraf --versions | grep -v 'alpha\|beta\|rc' | head -5
 VERSION_ZIGBEE2MQTT_IMG=2.11.0       # https://www.zigbee2mqtt.io                            - curl -s "https://hub.docker.com/v2/repositories/koenkk/zigbee2mqtt/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 VERSION_GO2RTC_IMG=1.9.14            # https://github.com/AlexxIT/go2rtc                     - curl -s "https://hub.docker.com/v2/repositories/alexxit/go2rtc/tags/?page_size=100" | jq -r '.results[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
@@ -32,15 +31,7 @@ helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
 "$DIR/technitium-dns/install.sh"
 
-echo -e "\n\nInstalling mosquitto"
-echo -e "=========================================================================================="
-helm upgrade mosquitto ./mosquitto \
-  --values ./mosquitto/values.yaml \
-  --values ./mosquitto/secrets.yaml \
-  --set deployment.image.tag=$VERSION_MOSQUITTO_IMG \
-  --namespace mosquitto \
-  --create-namespace \
-  --install
+"$DIR/mosquitto/install.sh"
 
 "$DIR/influxdb/install.sh"
 
