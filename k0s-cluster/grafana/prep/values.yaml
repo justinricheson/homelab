@@ -1,0 +1,7 @@
+app:
+  name: grafana-prep
+  
+secret:
+  adminUser: "put the result in secrets.yaml"
+  # Generate with: echo -n "$ADMIN_PASSWORD" | base64
+  adminPassword: "put the result in secrets.yaml"

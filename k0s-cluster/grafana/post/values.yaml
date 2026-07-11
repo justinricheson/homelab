@@ -1,0 +1,8 @@
+app:
+  name: grafana-ui
+
+cert:
+  dnsName: "*.home.justinricheson.com"
+
+ingress:
+  dnsName: grafana.home.justinricheson.com

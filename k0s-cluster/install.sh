@@ -27,6 +27,8 @@ helm repo update
 
 "$DIR/telegraf/install.sh"
 
+"$DIR/grafana/install.sh"
+
 "$DIR/zigbee2mqtt/install.sh"
 
 "$DIR/go2rtc/install.sh"
