@@ -2,8 +2,8 @@
 set -e
 
 # ---- CONFIG ----
-NAMESPACE="tailscale"
-PVC_NAME="tailscale-state"
+NAMESPACE="home-assistant"
+PVC_NAME="home-assistant-pvc"
 LOCAL_BACKUP_DIR="$HOME/Documents-nobak/local-backup/$PVC_NAME"
 # ----------------
 
