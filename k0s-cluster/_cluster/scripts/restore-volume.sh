@@ -2,8 +2,8 @@
 set -e
 
 # ---- CONFIG ----
-NAMESPACE="home-assistant"
-PVC_NAME="home-assistant-pvc"
+NAMESPACE="influxdb"
+PVC_NAME="influxdb-influxdb2"
 LOCAL_BACKUP_DIR="$HOME/Documents-nobak/local-backup/$PVC_NAME"
 # ----------------
 
