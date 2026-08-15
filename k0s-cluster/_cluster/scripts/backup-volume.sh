@@ -2,8 +2,8 @@
 set -e
 
 # ---- CONFIG ----
-NAMESPACE="zigbee2mqtt"
-PVC_NAME="zigbee2mqtt-pvc"
+NAMESPACE="technitium-dns"
+PVC_NAME="technitium-dns-pvc"
 LOCAL_BACKUP_DIR="$HOME/Documents-nobak/local-backup/$PVC_NAME"
 # ----------------
 
