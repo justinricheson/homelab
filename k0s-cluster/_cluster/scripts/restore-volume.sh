@@ -2,8 +2,8 @@
 set -e
 
 # ---- CONFIG ----
-NAMESPACE="influxdb"
-PVC_NAME="influxdb-influxdb2"
+NAMESPACE="zigbee2mqtt"
+PVC_NAME="zigbee2mqtt-pvc"
 LOCAL_BACKUP_DIR="$HOME/Documents-nobak/local-backup/$PVC_NAME"
 # ----------------
 
