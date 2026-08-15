@@ -2,8 +2,8 @@
 set -e
 
 # ---- CONFIG ----
-NAMESPACE="grafana"
-PVC_NAME="grafana"
+NAMESPACE="tailscale"
+PVC_NAME="tailscale-state"
 LOCAL_BACKUP_DIR="$HOME/Documents-nobak/local-backup/$PVC_NAME"
 # ----------------
 
