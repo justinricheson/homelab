@@ -7,6 +7,12 @@ cert:
 ingress:
   dnsName: storage.home.justinricheson.com
 
+target:
+  url: cifs://10.10.0.50/backup/devices/longhorn
+
 secret:
   # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
   hashedUsers: "put the result in secrets.yaml"
+  # Generate with: echo -n "$CIFS_PASSWORD" | base64
+  hashedCifsUser: "put the result in secrets.yaml"
+  hashedCifsPassword: "put the result in secrets.yaml"

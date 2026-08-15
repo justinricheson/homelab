@@ -1,0 +1,9 @@
+apiVersion: longhorn.io/v1beta2
+kind: BackupTarget
+metadata:
+  name: nas-target
+  namespace: {{ .Release.Namespace }}
+spec:
+  backupTargetURL: {{ .Values.target.url }}
+  credentialSecret: "cifs-secret"
+  pollInterval: "300s"

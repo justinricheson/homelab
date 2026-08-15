@@ -1,0 +1,9 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-nas-backup
+provisioner: driver.longhorn.io
+parameters:
+  backupTargetName: "nas-target"
+  recurringJobSelector: '[{"name":"nas-backup","isGroup":false}]'
