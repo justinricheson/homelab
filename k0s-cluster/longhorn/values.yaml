@@ -2,6 +2,7 @@ defaultSettings:
   defaultReplicaCount: 2
   allowCollectingLonghornUsageMetrics: false
   defaultDataLocality: "disabled"
+  allowRecurringJobWhileVolumeDetached: true
 
 persistence:
   defaultClassReplicaCount: 2
