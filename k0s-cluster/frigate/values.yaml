@@ -42,9 +42,9 @@ config: |
       pre_capture: 5
       post_capture: 30
     continuous:
-      days: 3
+      days: 2
     motion:
-      days: 3
+      days: 2
   snapshots:
     enabled: true
     retain:
