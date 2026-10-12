@@ -16,6 +16,7 @@ spec:
       labels:
         app: {{ .Values.app.name }}
     spec:
+      shareProcessNamespace: true
       containers:
       - name: {{ .Values.app.name }}
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
@@ -31,6 +32,54 @@ spec:
           readOnly: true
         - name: passwd
           mountPath: /mosquitto/passwd
+
+      - name: cert-reloader
+        image: {{ .Values.deployment.certReloader.repository }}:{{ .Values.deployment.certReloader.tag }}
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 1883
+          runAsGroup: 1883
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -eu
+          cert_dir=/mosquitto/certs
+          previous="$(readlink "$cert_dir/..data" 2>/dev/null || true)"
+          echo "Watching for Mosquitto TLS certificate updates"
+
+          while :; do
+            sleep 5
+            current="$(readlink "$cert_dir/..data" 2>/dev/null || true)"
+            [ -n "$current" ] || continue
+            [ "$current" = "$previous" ] && continue
+            previous="$current"
+
+            echo "Certificate Secret changed; reloading Mosquitto"
+            found=false
+            for proc in /proc/[0-9]*; do
+              [ -r "$proc/comm" ] || continue
+              IFS= read -r name < "$proc/comm" || continue
+              if [ "$name" = mosquitto ]; then
+                kill -HUP "${proc#/proc/}"
+                found=true
+                break
+              fi
+            done
+
+            if [ "$found" != true ]; then
+              echo "ERROR: Mosquitto process not found" >&2
+            fi
+          done
+        volumeMounts:
+        - name: certs
+          mountPath: /mosquitto/certs
+          readOnly: true
+
       volumes:
       - name: config
         configMap:

@@ -5,6 +5,9 @@ deployment:
   image:
     repository: eclipse-mosquitto
     tag: "latest"
+  certReloader:
+    repository: busybox
+    tag: "latest"
 
 service:
   ip: 10.10.0.12
