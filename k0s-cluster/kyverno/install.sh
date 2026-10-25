@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_KYVERNO_HELM=3.8.1 # https://github.com/kyverno/kyverno - helm search repo kyverno/kyverno --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_KYVERNO_HELM=3.9.2 # https://github.com/kyverno/kyverno - helm search repo kyverno/kyverno --versions | grep -v 'alpha\|beta\|rc' | head -5 (chart defaults image tags to appVersion)
 
 helm repo add kyverno https://kyverno.github.io/kyverno
 
