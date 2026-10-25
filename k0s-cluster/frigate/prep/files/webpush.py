@@ -6,14 +6,14 @@ import logging
 import os
 import queue
 import threading
+from collections.abc import Callable
 from dataclasses import dataclass
 from multiprocessing.synchronize import Event as MpEvent
-from typing import Any, Callable
+from typing import Any
 
 from py_vapid import Vapid01
 from pywebpush import WebPusher
 from titlecase import titlecase
-
 from frigate.comms.base_communicator import Communicator
 from frigate.comms.config_updater import ConfigSubscriber
 from frigate.config import FrigateConfig
@@ -27,7 +27,6 @@ from frigate.models import User
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class PushNotification:
     user: str
@@ -40,9 +39,21 @@ class PushNotification:
     ttl: int = 0
 
 
+def _build_web_pushers(user: str, subs: list[dict[str, Any]]) -> list[WebPusher]:
+    """Build pushers for a user's stored subscriptions, skipping unusable ones."""
+    pushers: list[WebPusher] = []
+    for sub in subs:
+        # WebPusher decodes the stored keys and raises on malformed ones
+        try:
+            pushers.append(WebPusher(sub))
+        except Exception:
+            logger.warning("Skipping invalid notification subscription for %s", user)
+
+    return pushers
+
+
 class WebPushClient(Communicator):
     """Frigate wrapper for webpush client."""
-
     def __init__(self, config: FrigateConfig, stop_event: MpEvent) -> None:
         self.config = config
         self.stop_event = stop_event
@@ -54,6 +65,8 @@ class WebPushClient(Communicator):
             c.name: 0  # type: ignore[misc]
             for c in self.config.cameras.values()
         }
+        self.suspension_broadcaster: Callable[[str, Any, bool], None] | None = None
+        self.config_lock = threading.Lock()
         self.last_camera_notification_time: dict[str, float] = {
             c.name: 0  # type: ignore[misc]
             for c in self.config.cameras.values()
@@ -65,32 +78,34 @@ class WebPushClient(Communicator):
             target=self._process_notifications, daemon=True
         )
         self.notification_thread.start()
-
+        self.suspension_thread = threading.Thread(
+            target=self._process_suspensions, daemon=True
+        )
+        self.suspension_thread.start()
         if not self.config.notifications.email:
             logger.warning("Email must be provided for push notifications to be sent.")
 
         # Pull keys from PEM or generate if they do not exist
         self.vapid = Vapid01.from_file(os.path.join(CONFIG_DIR, "notifications.pem"))
-
         users: list[dict[str, Any]] = (
             User.select(User.username, User.notification_tokens).dicts().iterator()
         )
         for user in users:
-            self.web_pushers[user["username"]] = []
-            for sub in user["notification_tokens"]:
-                self.web_pushers[user["username"]].append(WebPusher(sub))
-
+            self.web_pushers[user["username"]] = _build_web_pushers(
+                user["username"], user["notification_tokens"]
+            )
         # notification and auth config updater
         self.global_config_subscriber = ConfigSubscriber("config/")
         self.config_subscriber = CameraConfigUpdateSubscriber(
-            self.config, self.config.cameras, [CameraConfigUpdateEnum.notifications]
+            self.config,
+            self.config.cameras,
+            [CameraConfigUpdateEnum.add, CameraConfigUpdateEnum.notifications],
         )
         self._refresh_user_cameras()
 
     def subscribe(self, receiver: Callable) -> None:
         """Wrapper for allowing dispatcher to subscribe."""
         pass
-
     def check_registrations(self) -> None:
         # check for valid claim or create new one
         now = datetime.datetime.now().timestamp()
@@ -99,13 +114,11 @@ class WebPushClient(Communicator):
                 (datetime.datetime.now() + datetime.timedelta(hours=1)).timestamp()
             )
             endpoints: set[str] = set()
-
             # get a unique set of push endpoints
             for pushers in self.web_pushers.values():
                 for push in pushers:
                     endpoint: str = push.subscription_info["endpoint"]
                     endpoints.add(endpoint[0 : endpoint.index("/", 10)])
-
             # create new claim
             for endpoint in endpoints:
                 claim = {
@@ -114,7 +127,6 @@ class WebPushClient(Communicator):
                     "exp": self.refresh,
                 }
                 self.claim_headers[endpoint] = self.vapid.sign(claim)
-
     def cleanup_registrations(self) -> None:
         # delete any expired subs
         if len(self.expired_subs) > 0:
@@ -126,7 +138,6 @@ class WebPushClient(Communicator):
                 for token in stored_user.notification_tokens:
                     if token["endpoint"] in expired:
                         continue
-
                     user_subs.append(token)
 
                 # overwrite the database and reset web pushers
@@ -134,17 +145,13 @@ class WebPushClient(Communicator):
                     User.username == user
                 ).execute()
 
-                self.web_pushers[user] = []
-
-                for sub in user_subs:
-                    self.web_pushers[user].append(WebPusher(sub))
+                self.web_pushers[user] = _build_web_pushers(user, user_subs)
 
                 logger.info(
                     f"Cleaned up {len(expired)} notification subscriptions for {user}"
                 )
 
         self.expired_subs = {}
-
     def suspend_notifications(self, camera: str, minutes: int) -> None:
         """Suspend notifications for a specific camera."""
         suspend_until = int(
@@ -154,7 +161,6 @@ class WebPushClient(Communicator):
         logger.info(
             f"Notifications for {camera} suspended until {datetime.datetime.fromtimestamp(suspend_until).strftime('%Y-%m-%d %H:%M:%S')}"
         )
-
     def unsuspend_notifications(self, camera: str) -> None:
         """Unsuspend notifications for a specific camera."""
         self.suspended_cameras[camera] = 0
@@ -162,30 +168,49 @@ class WebPushClient(Communicator):
 
     def is_camera_suspended(self, camera: str) -> bool:
         return datetime.datetime.now().timestamp() <= self.suspended_cameras[camera]
+    def set_suspension_broadcaster(
+        self, broadcaster: Callable[[str, Any, bool], None]
+    ) -> None:
+        """Register the callback used to broadcast suspension state changes."""
+        self.suspension_broadcaster = broadcaster
 
+    def _process_suspensions(self) -> None:
+        while not self.stop_event.wait(1):
+            self._clear_expired_suspensions()
+    def _clear_expired_suspensions(self) -> None:
+        """Reset and broadcast cameras whose suspension window has elapsed."""
+        now = datetime.datetime.now().timestamp()
+        for camera, suspended_until in list(self.suspended_cameras.items()):
+            if suspended_until and now > suspended_until:
+                self.unsuspend_notifications(camera)
+                if self.suspension_broadcaster is not None:
+                    self.suspension_broadcaster(
+                        f"{camera}/notifications/suspended", "0", True
+                    )
     def publish(self, topic: str, payload: Any, retain: bool = False) -> None:
         """Wrapper for publishing when client is in valid state."""
-        # check for updated global config (notifications, auth)
-        while True:
-            config_topic, config_payload = (
-                self.global_config_subscriber.check_for_update()
-            )
-            if config_topic is None:
-                break
-            if config_topic == "config/notifications" and config_payload:
-                self.config.notifications = config_payload
-            elif config_topic == "config/auth":
-                if isinstance(config_payload, AuthConfig):
-                    self.config.auth = config_payload
+        with self.config_lock:
+            # check for updated global config (notifications, auth)
+            while True:
+                config_topic, config_payload = (
+                    self.global_config_subscriber.check_for_update()
+                )
+                if config_topic is None:
+                    break
+                if config_topic == "config/notifications" and config_payload:
+                    self.config.notifications = config_payload
+                elif config_topic == "config/auth":
+                    if isinstance(config_payload, AuthConfig):
+                        self.config.auth = config_payload
+                    self._refresh_user_cameras()
+            updates = self.config_subscriber.check_for_updates()
+
+            if "add" in updates:
+                for camera in updates["add"]:
+                    self.suspended_cameras[camera] = 0
+                    self.last_camera_notification_time[camera] = 0
+
                 self._refresh_user_cameras()
-
-        updates = self.config_subscriber.check_for_updates()
-
-        if "add" in updates:
-            for camera in updates["add"]:
-                self.suspended_cameras[camera] = 0
-                self.last_camera_notification_time[camera] = 0
-
         if topic == "reviews":
             decoded = json.loads(payload)
             camera = decoded["before"]["camera"]
@@ -197,10 +222,8 @@ class WebPushClient(Communicator):
             self.send_alert(decoded)
         if topic == "triggers":
             decoded = json.loads(payload)
-
             camera = decoded["camera"]
             name = decoded["name"]
-
             # ensure notifications are enabled and the specific trigger has
             # notification action enabled
             if (
@@ -212,7 +235,6 @@ class WebPushClient(Communicator):
                 .actions
             ):
                 return
-
             if self.is_camera_suspended(camera):
                 logger.debug(f"Notifications for {camera} are currently suspended.")
                 return
@@ -235,7 +257,6 @@ class WebPushClient(Communicator):
                 )
                 return
             self.send_notification_test()
-
     def send_push_notification(
         self,
         user: str,
@@ -258,20 +279,17 @@ class WebPushClient(Communicator):
             ttl=ttl,
         )
         self.notification_queue.put(notification)
-
     def _process_notifications(self) -> None:
         while not self.stop_event.is_set():
             try:
                 notification = self.notification_queue.get(timeout=1.0)
                 self.check_registrations()
-
                 for pusher in self.web_pushers[notification.user]:
                     endpoint = pusher.subscription_info["endpoint"]
                     headers = self.claim_headers[
                         endpoint[: endpoint.index("/", 10)]
                     ].copy()
                     headers["urgency"] = "high"
-
                     resp = pusher.send(
                         headers=headers,
                         ttl=notification.ttl,
@@ -289,7 +307,6 @@ class WebPushClient(Communicator):
                         ),
                         timeout=10,
                     )
-
                     if resp.status_code in (404, 410):
                         self.expired_subs.setdefault(notification.user, []).append(
                             endpoint
@@ -301,12 +318,10 @@ class WebPushClient(Communicator):
                         logger.warning(
                             f"Failed to send notification to {notification.user} :: {resp.status_code}"
                         )
-
             except queue.Empty:
                 continue
             except Exception as e:
                 logger.error(f"Error processing notification: {str(e)}")
-
     def _refresh_user_cameras(self) -> None:
         """Rebuild the user-to-cameras access cache from the database."""
         all_camera_names = set(self.config.cameras.keys())
@@ -323,7 +338,6 @@ class WebPushClient(Communicator):
                 ", ".join(allowed),
             )
         self.user_cameras = updated
-
     def _user_has_camera_access(self, username: str, camera: str) -> bool:
         """Check if a user has access to a specific camera based on cached roles."""
         allowed = self.user_cameras.get(username)
@@ -331,7 +345,6 @@ class WebPushClient(Communicator):
             logger.debug(f"No camera access information found for user {username}")
             return False
         return camera in allowed
-
     def _within_cooldown(self, camera: str) -> bool:
         now = datetime.datetime.now().timestamp()
         if now - self.last_notification_time < self.config.notifications.cooldown:
@@ -348,7 +361,6 @@ class WebPushClient(Communicator):
             )
             return True
         return False
-
     def send_notification_test(self) -> None:
         if not self.config.notifications.email:
             return
@@ -356,7 +368,6 @@ class WebPushClient(Communicator):
         self.check_registrations()
 
         logger.debug("Sending test notification")
-
         for user in self.web_pushers:
             self.send_push_notification(
                 user=user,
@@ -366,7 +377,6 @@ class WebPushClient(Communicator):
                 direct_url="/",
                 notification_type="test",
             )
-
     def send_alert(self, payload: dict[str, Any]) -> None:
         if (
             not self.config.notifications.email
@@ -379,20 +389,19 @@ class WebPushClient(Communicator):
             self.config.cameras[camera], "friendly_name", None
         ) or titlecase(camera.replace("_", " "))
         current_time = datetime.datetime.now().timestamp()
-
         if self._within_cooldown(camera):
             return
 
         self.check_registrations()
 
         state = payload["type"]
-
         # Don't notify if message is an update and important fields don't have an update
         if (
-           # JRICHESON patch
+            # JRICHESON patch
             # Stop duplicate notifications
             state != "new"
             # state == "update"
+            # and payload["before"]["severity"] == payload["after"]["severity"]
             # and len(payload["before"]["data"]["objects"])
             # == len(payload["after"]["data"]["objects"])
             # and len(payload["before"]["data"]["zones"])
@@ -402,7 +411,6 @@ class WebPushClient(Communicator):
                 f"Skipping notification for {camera} - message is an update and important fields don't have an update"
             )
             return
-
         self.last_camera_notification_time[camera] = current_time
         self.last_notification_time = current_time
 
@@ -414,7 +422,6 @@ class WebPushClient(Communicator):
                 sorted_objects.add(obj)
 
         sorted_objects.update(payload["after"]["data"]["sub_labels"])
-
         image = f"{payload['after']['thumb_path'].replace(BASE_DIR, '')}"
         ended = state == "end" or state == "genai"
 
@@ -423,7 +430,6 @@ class WebPushClient(Communicator):
             threat_level = payload["after"]["data"]["metadata"].get(
                 "potential_threat_level", 0
             )
-
             # Add prefix for threat levels 1 and 2
             if threat_level == 1:
                 title = f"Needs Review: {base_title}"
@@ -431,7 +437,6 @@ class WebPushClient(Communicator):
                 title = f"Security Concern: {base_title}"
             else:
                 title = base_title
-
             if payload["after"]["data"]["metadata"].get("shortSummary"):
                 message = payload["after"]["data"]["metadata"]["shortSummary"]
             else:
@@ -439,7 +444,6 @@ class WebPushClient(Communicator):
         else:
             zone_names = payload["after"]["data"]["zones"]
             formatted_zone_names = []
-
             for zone_name in zone_names:
                 if zone_name in self.config.cameras[camera].zones:
                     formatted_zone_names.append(
@@ -449,7 +453,6 @@ class WebPushClient(Communicator):
                     )
                 else:
                     formatted_zone_names.append(titlecase(zone_name.replace("_", " ")))
-
             title = f"{titlecase(', '.join(sorted_objects).replace('_', ' '))}{' was' if state == 'end' else ''} detected in {', '.join(formatted_zone_names)}"
             message = f"Detected on {camera_name}"
 
@@ -457,13 +460,11 @@ class WebPushClient(Communicator):
             logger.debug(
                 f"Sending a notification with state {state} and message {message}"
             )
-
         # if event is ongoing open to live view otherwise open to recordings view
         direct_url = f"/review?id={reviewId}" if ended else f"/#{camera}"
         ttl = 3600 if ended else 0
 
         logger.debug(f"Sending push notification for {camera}, review ID {reviewId}")
-
         for user in self.web_pushers:
             if not self._user_has_camera_access(user, camera):
                 logger.debug(
@@ -472,7 +473,6 @@ class WebPushClient(Communicator):
                     camera,
                 )
                 continue
-
             self.send_push_notification(
                 user=user,
                 payload=payload,
@@ -488,7 +488,6 @@ class WebPushClient(Communicator):
     def send_trigger(self, payload: dict[str, Any]) -> None:
         if not self.config.notifications.email:
             return
-
         camera: str = payload["camera"]
         camera_name: str = getattr(
             self.config.cameras[camera], "friendly_name", None
@@ -502,7 +501,6 @@ class WebPushClient(Communicator):
 
         self.last_camera_notification_time[camera] = current_time
         self.last_notification_time = current_time
-
         trigger_type = payload["type"]
         event_id = payload["event_id"]
         name = payload["name"]
@@ -514,7 +512,6 @@ class WebPushClient(Communicator):
 
         direct_url = f"/explore?event_id={event_id}"
         ttl = 0
-
         logger.debug(
             f"Sending push notification for {camera_name}, trigger name {name}"
         )
@@ -527,7 +524,6 @@ class WebPushClient(Communicator):
                     camera,
                 )
                 continue
-
             self.send_push_notification(
                 user=user,
                 payload=payload,
@@ -539,7 +535,6 @@ class WebPushClient(Communicator):
             )
 
         self.cleanup_registrations()
-
     def send_camera_monitoring(self, payload: dict[str, Any]) -> None:
         camera: str = payload["camera"]
         camera_name: str = getattr(
@@ -551,7 +546,6 @@ class WebPushClient(Communicator):
         text: str = payload.get("message") or payload.get("reasoning", "")
         title = f"{camera_name}: Monitoring Alert"
         message = (text[:197] + "...") if len(text) > 200 else text
-
         logger.debug(f"Sending camera monitoring push notification for {camera_name}")
 
         for user in self.web_pushers:
@@ -562,7 +556,6 @@ class WebPushClient(Communicator):
                     camera,
                 )
                 continue
-
             self.send_push_notification(
                 user=user,
                 payload=payload,
