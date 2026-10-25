@@ -1,0 +1,14 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: system-backup
+  namespace: {{ .Release.Namespace }}
+spec:
+  cron: {{ .Values.systemBackup.cron | quote }}
+  task: system-backup
+  groups: []
+  retain: {{ .Values.systemBackup.retain }}
+  concurrency: 1
+  parameters:
+    volume-backup-policy: {{ .Values.systemBackup.volumeBackupPolicy | quote }}

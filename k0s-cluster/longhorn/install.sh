@@ -4,9 +4,18 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_LONGHORN_HELM=1.10.1 # https://longhorn.io - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_LONGHORN_HELM=1.13.0 # https://longhorn.io - helm search repo longhorn --versions | grep -v 'alpha\|beta\|rc' | head -5
 
 helm repo add longhorn https://charts.longhorn.io
+
+echo -e "\n\nInstalling longhorn-prep"
+echo -e "=========================================================================================="
+helm upgrade longhorn-prep "$DIR/prep" \
+  --values "$DIR/prep/values.yaml" \
+  --values "$DIR/prep/secrets.yaml" \
+  --namespace longhorn-system \
+  --create-namespace \
+  --install
 
 echo -e "\n\nInstalling longhorn"
 echo -e "=========================================================================================="

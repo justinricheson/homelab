@@ -1,0 +1,5 @@
+secret:
+  # Generate with: echo -n "$CIFS_USERNAME" | base64
+  hashedCifsUser: "put the result in secrets.yaml"
+  # Generate with: echo -n "$CIFS_PASSWORD" | base64
+  hashedCifsPassword: "put the result in secrets.yaml"

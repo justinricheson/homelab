@@ -1,8 +1,14 @@
+defaultBackupStore:
+  backupTarget: "cifs://10.10.0.50/backup/devices/longhorn-system"
+  backupTargetCredentialSecret: cifs-secret
+  pollInterval: 300
+
 defaultSettings:
   defaultReplicaCount: 2
   allowCollectingLonghornUsageMetrics: false
   defaultDataLocality: "disabled"
   allowRecurringJobWhileVolumeDetached: true
+  concurrentAutomaticEngineUpgradePerNodeLimit: 1
 
 persistence:
   defaultClassReplicaCount: 2

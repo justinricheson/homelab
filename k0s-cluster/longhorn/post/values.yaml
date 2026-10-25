@@ -10,9 +10,11 @@ ingress:
 target:
   url: cifs://10.10.0.50/backup/devices/longhorn
 
+systemBackup:
+  cron: "0 4 * * *"
+  retain: 7
+  volumeBackupPolicy: disabled
+
 secret:
   # Generate with: htpasswd -nbB admin "$ADMIN_PASSWORD"
   hashedUsers: "put the result in secrets.yaml"
-  # Generate with: echo -n "$CIFS_PASSWORD" | base64
-  hashedCifsUser: "put the result in secrets.yaml"
-  hashedCifsPassword: "put the result in secrets.yaml"
