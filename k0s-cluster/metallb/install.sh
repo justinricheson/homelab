@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_METALLB_HELM=0.15.3 # https://metallb.io - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_METALLB_HELM=0.16.1 # https://metallb.io - helm search repo metallb/metallb --versions | grep -v 'alpha\|beta\|rc' | head -5
 
 helm repo add metallb https://metallb.github.io/metallb
 
