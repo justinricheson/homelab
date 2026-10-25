@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_TRAEFIK_HELM=41.0.1 # https://traefik.io - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_TRAEFIK_HELM=42.1.3 # https://traefik.io - helm search repo traefik/traefik --versions | grep -v 'alpha\|beta\|rc' | head -5
 
 helm repo add traefik https://traefik.github.io/charts
 
