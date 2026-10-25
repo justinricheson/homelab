@@ -3,7 +3,7 @@
 set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-VERSION_CERT_MGR_HELM=v1.20.2 # https://cert-manager.io - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
+VERSION_CERT_MGR_HELM=v1.21.3 # https://cert-manager.io - curl -s "https://quay.io/api/v1/repository/jetstack/charts/cert-manager/tag/?onlyActiveTags=true&limit=100" | jq -r '.tags[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -5
 
 echo -e "\n\nInstalling cert-manager"
 echo -e "=========================================================================================="
