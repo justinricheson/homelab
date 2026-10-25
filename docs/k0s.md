@@ -69,9 +69,11 @@
 
 - Setup `k0sctl`
   - If the ips have changed you may need to update the config
-  - Ping each node: `ping <node.local`
-  - Collect the IPs and update the config
-    - `address: 10.10.145.8`
+    - Ping each node: `ping <node.local`
+    - Collect the IPs and update the config
+      - `address: 10.10.145.8`
+  - Update the k0s version in k0sctl.yaml
+    - https://github.com/k0sproject/k0s/releases
 
 - Backup
   - `k0sctl backup --config ~/<path-to-workspace>/_cluster/k0sctl.yaml`
