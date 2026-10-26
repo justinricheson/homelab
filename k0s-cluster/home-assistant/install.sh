@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-VERSION_HA_HELM=0.3.63 # https://github.com/pajikos/home-assistant-helm-chart - helm search repo pajikos/home-assistant --versions | grep -v 'alpha\|beta\|rc' | head -5
+VERSION_HA_HELM=0.3.89 # https://github.com/pajikos/home-assistant-helm-chart - helm search repo pajikos/home-assistant --versions | grep -v 'alpha\|beta\|rc' | head -5
 
 helm repo add pajikos http://pajikos.github.io/home-assistant-helm-chart
 
