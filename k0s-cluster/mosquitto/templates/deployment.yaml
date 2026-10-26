@@ -17,6 +17,23 @@ spec:
         app: {{ .Values.app.name }}
     spec:
       shareProcessNamespace: true
+      initContainers:
+      - name: prepare-password-file
+        image: {{ .Values.deployment.utilityImage.repository }}:{{ .Values.deployment.utilityImage.tag }}
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          allowPrivilegeEscalation: false
+        command:
+        - /bin/sh
+        - -c
+        - cp /source/passwordfile /dest/passwordfile && chown 1883:1883 /dest/passwordfile && chmod 0600 /dest/passwordfile
+        volumeMounts:
+        - name: passwd-source
+          mountPath: /source
+          readOnly: true
+        - name: passwd
+          mountPath: /dest
       containers:
       - name: {{ .Values.app.name }}
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
@@ -34,7 +51,7 @@ spec:
           mountPath: /mosquitto/passwd
 
       - name: cert-reloader
-        image: {{ .Values.deployment.certReloader.repository }}:{{ .Values.deployment.certReloader.tag }}
+        image: {{ .Values.deployment.utilityImage.repository }}:{{ .Values.deployment.utilityImage.tag }}
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1883
@@ -88,5 +105,8 @@ spec:
         secret:
           secretName: wildcard-tls
       - name: passwd
+        emptyDir: {}
+      - name: passwd-source
         secret:
           secretName: {{ .Values.app.name }}-passwd
+          defaultMode: 0400

@@ -5,7 +5,7 @@ deployment:
   image:
     repository: eclipse-mosquitto
     tag: "latest"
-  certReloader:
+  utilityImage:
     repository: busybox
     tag: "latest"
 
